@@ -10,33 +10,154 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ActivityRouteImport } from './routes/activity'
+import { Route as DeskRouteImport } from './routes/desk'
+import { Route as DxReportRouteImport } from './routes/dx-report'
+import { Route as MarketsRouteImport } from './routes/markets'
+import { Route as ReceiptRouteImport } from './routes/receipt'
+import { Route as ReviewRouteImport } from './routes/review'
+import { Route as SimulateRouteImport } from './routes/simulate'
+import { Route as WatchersRouteImport } from './routes/watchers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivityRoute = ActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeskRoute = DeskRouteImport.update({
+  id: '/desk',
+  path: '/desk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DxReportRoute = DxReportRouteImport.update({
+  id: '/dx-report',
+  path: '/dx-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketsRoute = MarketsRouteImport.update({
+  id: '/markets',
+  path: '/markets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReceiptRoute = ReceiptRouteImport.update({
+  id: '/receipt',
+  path: '/receipt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewRoute = ReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SimulateRoute = SimulateRouteImport.update({
+  id: '/simulate',
+  path: '/simulate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WatchersRoute = WatchersRouteImport.update({
+  id: '/watchers',
+  path: '/watchers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/activity': typeof ActivityRoute
+  '/desk': typeof DeskRoute
+  '/dx-report': typeof DxReportRoute
+  '/markets': typeof MarketsRoute
+  '/receipt': typeof ReceiptRoute
+  '/review': typeof ReviewRoute
+  '/simulate': typeof SimulateRoute
+  '/watchers': typeof WatchersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/activity': typeof ActivityRoute
+  '/desk': typeof DeskRoute
+  '/dx-report': typeof DxReportRoute
+  '/markets': typeof MarketsRoute
+  '/receipt': typeof ReceiptRoute
+  '/review': typeof ReviewRoute
+  '/simulate': typeof SimulateRoute
+  '/watchers': typeof WatchersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/activity': typeof ActivityRoute
+  '/desk': typeof DeskRoute
+  '/dx-report': typeof DxReportRoute
+  '/markets': typeof MarketsRoute
+  '/receipt': typeof ReceiptRoute
+  '/review': typeof ReviewRoute
+  '/simulate': typeof SimulateRoute
+  '/watchers': typeof WatchersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/activity'
+    | '/desk'
+    | '/dx-report'
+    | '/markets'
+    | '/receipt'
+    | '/review'
+    | '/simulate'
+    | '/watchers'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/activity'
+    | '/desk'
+    | '/dx-report'
+    | '/markets'
+    | '/receipt'
+    | '/review'
+    | '/simulate'
+    | '/watchers'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/activity'
+    | '/desk'
+    | '/dx-report'
+    | '/markets'
+    | '/receipt'
+    | '/review'
+    | '/simulate'
+    | '/watchers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ActivityRoute: typeof ActivityRoute
+  DeskRoute: typeof DeskRoute
+  DxReportRoute: typeof DxReportRoute
+  MarketsRoute: typeof MarketsRoute
+  ReceiptRoute: typeof ReceiptRoute
+  ReviewRoute: typeof ReviewRoute
+  SimulateRoute: typeof SimulateRoute
+  WatchersRoute: typeof WatchersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +169,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activity': {
+      id: '/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof ActivityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/desk': {
+      id: '/desk'
+      path: '/desk'
+      fullPath: '/desk'
+      preLoaderRoute: typeof DeskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dx-report': {
+      id: '/dx-report'
+      path: '/dx-report'
+      fullPath: '/dx-report'
+      preLoaderRoute: typeof DxReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/markets': {
+      id: '/markets'
+      path: '/markets'
+      fullPath: '/markets'
+      preLoaderRoute: typeof MarketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/receipt': {
+      id: '/receipt'
+      path: '/receipt'
+      fullPath: '/receipt'
+      preLoaderRoute: typeof ReceiptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review': {
+      id: '/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof ReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/simulate': {
+      id: '/simulate'
+      path: '/simulate'
+      fullPath: '/simulate'
+      preLoaderRoute: typeof SimulateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/watchers': {
+      id: '/watchers'
+      path: '/watchers'
+      fullPath: '/watchers'
+      preLoaderRoute: typeof WatchersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ActivityRoute: ActivityRoute,
+  DeskRoute: DeskRoute,
+  DxReportRoute: DxReportRoute,
+  MarketsRoute: MarketsRoute,
+  ReceiptRoute: ReceiptRoute,
+  ReviewRoute: ReviewRoute,
+  SimulateRoute: SimulateRoute,
+  WatchersRoute: WatchersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
