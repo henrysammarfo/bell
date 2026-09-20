@@ -10,33 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DeskRouteImport } from './routes/desk'
+import { Route as ReceiptRouteImport } from './routes/receipt'
+import { Route as ReviewRouteImport } from './routes/review'
+import { Route as SimulateRouteImport } from './routes/simulate'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeskRoute = DeskRouteImport.update({
+  id: '/desk',
+  path: '/desk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReceiptRoute = ReceiptRouteImport.update({
+  id: '/receipt',
+  path: '/receipt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewRoute = ReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SimulateRoute = SimulateRouteImport.update({
+  id: '/simulate',
+  path: '/simulate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/desk': typeof DeskRoute
+  '/receipt': typeof ReceiptRoute
+  '/review': typeof ReviewRoute
+  '/simulate': typeof SimulateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/desk': typeof DeskRoute
+  '/receipt': typeof ReceiptRoute
+  '/review': typeof ReviewRoute
+  '/simulate': typeof SimulateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/desk': typeof DeskRoute
+  '/receipt': typeof ReceiptRoute
+  '/review': typeof ReviewRoute
+  '/simulate': typeof SimulateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/desk' | '/receipt' | '/review' | '/simulate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/desk' | '/receipt' | '/review' | '/simulate'
+  id: '__root__' | '/' | '/desk' | '/receipt' | '/review' | '/simulate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DeskRoute: typeof DeskRoute
+  ReceiptRoute: typeof ReceiptRoute
+  ReviewRoute: typeof ReviewRoute
+  SimulateRoute: typeof SimulateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +88,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/desk': {
+      id: '/desk'
+      path: '/desk'
+      fullPath: '/desk'
+      preLoaderRoute: typeof DeskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/receipt': {
+      id: '/receipt'
+      path: '/receipt'
+      fullPath: '/receipt'
+      preLoaderRoute: typeof ReceiptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review': {
+      id: '/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof ReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/simulate': {
+      id: '/simulate'
+      path: '/simulate'
+      fullPath: '/simulate'
+      preLoaderRoute: typeof SimulateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DeskRoute: DeskRoute,
+  ReceiptRoute: ReceiptRoute,
+  ReviewRoute: ReviewRoute,
+  SimulateRoute: SimulateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
