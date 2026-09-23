@@ -14,7 +14,192 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_history: {
+        Row: {
+          amount: string
+          created_at: string
+          detail: string
+          event_type: string
+          id: string
+          state: string
+          symbol: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: string
+          created_at?: string
+          detail?: string
+          event_type: string
+          id?: string
+          state: string
+          symbol: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: string
+          created_at?: string
+          detail?: string
+          event_type?: string
+          id?: string
+          state?: string
+          symbol?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dx_reports: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      simulation_results: {
+        Row: {
+          amount: string
+          created_at: string
+          details: Json
+          id: string
+          outcome: string
+          session_state: string
+          symbol: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: string
+          created_at?: string
+          details?: Json
+          id?: string
+          outcome: string
+          session_state: string
+          symbol: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: string
+          created_at?: string
+          details?: Json
+          id?: string
+          outcome?: string
+          session_state?: string
+          symbol?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trade_briefs: {
+        Row: {
+          brief: string
+          created_at: string
+          id: string
+          session_state: string
+          symbol: string
+          thesis: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brief: string
+          created_at?: string
+          id?: string
+          session_state: string
+          symbol: string
+          thesis: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brief?: string
+          created_at?: string
+          id?: string
+          session_state?: string
+          symbol?: string
+          thesis?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      watchlist_items: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          rule: string
+          symbol: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          rule?: string
+          symbol: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          rule?: string
+          symbol?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
