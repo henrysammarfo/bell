@@ -10,19 +10,26 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as ActivityRouteImport } from './routes/activity'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DeskRouteImport } from './routes/desk'
-import { Route as DxReportRouteImport } from './routes/dx-report'
 import { Route as MarketsRouteImport } from './routes/markets'
-import { Route as ReceiptRouteImport } from './routes/receipt'
-import { Route as ReviewRouteImport } from './routes/review'
-import { Route as SimulateRouteImport } from './routes/simulate'
-import { Route as WatchersRouteImport } from './routes/watchers'
+import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated.activity'
+import { Route as AuthenticatedBriefRouteImport } from './routes/_authenticated.brief'
+import { Route as AuthenticatedDxReportRouteImport } from './routes/_authenticated.dx-report'
+import { Route as AuthenticatedReceiptRouteImport } from './routes/_authenticated.receipt'
+import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated.review'
+import { Route as AuthenticatedSimulateRouteImport } from './routes/_authenticated.simulate'
+import { Route as AuthenticatedWatchersRouteImport } from './routes/_authenticated.watchers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -30,9 +37,9 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ActivityRoute = ActivityRouteImport.update({
-  id: '/activity',
-  path: '/activity',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeskRoute = DeskRouteImport.update({
@@ -40,83 +47,102 @@ const DeskRoute = DeskRouteImport.update({
   path: '/desk',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DxReportRoute = DxReportRouteImport.update({
-  id: '/dx-report',
-  path: '/dx-report',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MarketsRoute = MarketsRouteImport.update({
   id: '/markets',
   path: '/markets',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReceiptRoute = ReceiptRouteImport.update({
+const AuthenticatedActivityRoute = AuthenticatedActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBriefRoute = AuthenticatedBriefRouteImport.update({
+  id: '/brief',
+  path: '/brief',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDxReportRoute = AuthenticatedDxReportRouteImport.update({
+  id: '/dx-report',
+  path: '/dx-report',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedReceiptRoute = AuthenticatedReceiptRouteImport.update({
   id: '/receipt',
   path: '/receipt',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ReviewRoute = ReviewRouteImport.update({
+const AuthenticatedReviewRoute = AuthenticatedReviewRouteImport.update({
   id: '/review',
   path: '/review',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const SimulateRoute = SimulateRouteImport.update({
+const AuthenticatedSimulateRoute = AuthenticatedSimulateRouteImport.update({
   id: '/simulate',
   path: '/simulate',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const WatchersRoute = WatchersRouteImport.update({
+const AuthenticatedWatchersRoute = AuthenticatedWatchersRouteImport.update({
   id: '/watchers',
   path: '/watchers',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/activity': typeof ActivityRoute
+  '/auth': typeof AuthRoute
   '/desk': typeof DeskRoute
-  '/dx-report': typeof DxReportRoute
   '/markets': typeof MarketsRoute
-  '/receipt': typeof ReceiptRoute
-  '/review': typeof ReviewRoute
-  '/simulate': typeof SimulateRoute
-  '/watchers': typeof WatchersRoute
+  '/activity': typeof AuthenticatedActivityRoute
+  '/brief': typeof AuthenticatedBriefRoute
+  '/dx-report': typeof AuthenticatedDxReportRoute
+  '/receipt': typeof AuthenticatedReceiptRoute
+  '/review': typeof AuthenticatedReviewRoute
+  '/simulate': typeof AuthenticatedSimulateRoute
+  '/watchers': typeof AuthenticatedWatchersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/activity': typeof ActivityRoute
+  '/auth': typeof AuthRoute
   '/desk': typeof DeskRoute
-  '/dx-report': typeof DxReportRoute
   '/markets': typeof MarketsRoute
-  '/receipt': typeof ReceiptRoute
-  '/review': typeof ReviewRoute
-  '/simulate': typeof SimulateRoute
-  '/watchers': typeof WatchersRoute
+  '/activity': typeof AuthenticatedActivityRoute
+  '/brief': typeof AuthenticatedBriefRoute
+  '/dx-report': typeof AuthenticatedDxReportRoute
+  '/receipt': typeof AuthenticatedReceiptRoute
+  '/review': typeof AuthenticatedReviewRoute
+  '/simulate': typeof AuthenticatedSimulateRoute
+  '/watchers': typeof AuthenticatedWatchersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/activity': typeof ActivityRoute
+  '/auth': typeof AuthRoute
   '/desk': typeof DeskRoute
-  '/dx-report': typeof DxReportRoute
   '/markets': typeof MarketsRoute
-  '/receipt': typeof ReceiptRoute
-  '/review': typeof ReviewRoute
-  '/simulate': typeof SimulateRoute
-  '/watchers': typeof WatchersRoute
+  '/_authenticated/activity': typeof AuthenticatedActivityRoute
+  '/_authenticated/brief': typeof AuthenticatedBriefRoute
+  '/_authenticated/dx-report': typeof AuthenticatedDxReportRoute
+  '/_authenticated/receipt': typeof AuthenticatedReceiptRoute
+  '/_authenticated/review': typeof AuthenticatedReviewRoute
+  '/_authenticated/simulate': typeof AuthenticatedSimulateRoute
+  '/_authenticated/watchers': typeof AuthenticatedWatchersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
-    | '/activity'
+    | '/auth'
     | '/desk'
-    | '/dx-report'
     | '/markets'
+    | '/activity'
+    | '/brief'
+    | '/dx-report'
     | '/receipt'
     | '/review'
     | '/simulate'
@@ -125,10 +151,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/activity'
+    | '/auth'
     | '/desk'
-    | '/dx-report'
     | '/markets'
+    | '/activity'
+    | '/brief'
+    | '/dx-report'
     | '/receipt'
     | '/review'
     | '/simulate'
@@ -136,28 +164,27 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
-    | '/activity'
+    | '/auth'
     | '/desk'
-    | '/dx-report'
     | '/markets'
-    | '/receipt'
-    | '/review'
-    | '/simulate'
-    | '/watchers'
+    | '/_authenticated/activity'
+    | '/_authenticated/brief'
+    | '/_authenticated/dx-report'
+    | '/_authenticated/receipt'
+    | '/_authenticated/review'
+    | '/_authenticated/simulate'
+    | '/_authenticated/watchers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
-  ActivityRoute: typeof ActivityRoute
+  AuthRoute: typeof AuthRoute
   DeskRoute: typeof DeskRoute
-  DxReportRoute: typeof DxReportRoute
   MarketsRoute: typeof MarketsRoute
-  ReceiptRoute: typeof ReceiptRoute
-  ReviewRoute: typeof ReviewRoute
-  SimulateRoute: typeof SimulateRoute
-  WatchersRoute: typeof WatchersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -169,6 +196,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -176,11 +210,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/activity': {
-      id: '/activity'
-      path: '/activity'
-      fullPath: '/activity'
-      preLoaderRoute: typeof ActivityRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/desk': {
@@ -190,13 +224,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeskRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dx-report': {
-      id: '/dx-report'
-      path: '/dx-report'
-      fullPath: '/dx-report'
-      preLoaderRoute: typeof DxReportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/markets': {
       id: '/markets'
       path: '/markets'
@@ -204,48 +231,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/receipt': {
-      id: '/receipt'
+    '/_authenticated/activity': {
+      id: '/_authenticated/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof AuthenticatedActivityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/brief': {
+      id: '/_authenticated/brief'
+      path: '/brief'
+      fullPath: '/brief'
+      preLoaderRoute: typeof AuthenticatedBriefRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dx-report': {
+      id: '/_authenticated/dx-report'
+      path: '/dx-report'
+      fullPath: '/dx-report'
+      preLoaderRoute: typeof AuthenticatedDxReportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/receipt': {
+      id: '/_authenticated/receipt'
       path: '/receipt'
       fullPath: '/receipt'
-      preLoaderRoute: typeof ReceiptRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedReceiptRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/review': {
-      id: '/review'
+    '/_authenticated/review': {
+      id: '/_authenticated/review'
       path: '/review'
       fullPath: '/review'
-      preLoaderRoute: typeof ReviewRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedReviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/simulate': {
-      id: '/simulate'
+    '/_authenticated/simulate': {
+      id: '/_authenticated/simulate'
       path: '/simulate'
       fullPath: '/simulate'
-      preLoaderRoute: typeof SimulateRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedSimulateRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/watchers': {
-      id: '/watchers'
+    '/_authenticated/watchers': {
+      id: '/_authenticated/watchers'
       path: '/watchers'
       fullPath: '/watchers'
-      preLoaderRoute: typeof WatchersRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedWatchersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
+  AuthenticatedBriefRoute: typeof AuthenticatedBriefRoute
+  AuthenticatedDxReportRoute: typeof AuthenticatedDxReportRoute
+  AuthenticatedReceiptRoute: typeof AuthenticatedReceiptRoute
+  AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
+  AuthenticatedSimulateRoute: typeof AuthenticatedSimulateRoute
+  AuthenticatedWatchersRoute: typeof AuthenticatedWatchersRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedActivityRoute: AuthenticatedActivityRoute,
+  AuthenticatedBriefRoute: AuthenticatedBriefRoute,
+  AuthenticatedDxReportRoute: AuthenticatedDxReportRoute,
+  AuthenticatedReceiptRoute: AuthenticatedReceiptRoute,
+  AuthenticatedReviewRoute: AuthenticatedReviewRoute,
+  AuthenticatedSimulateRoute: AuthenticatedSimulateRoute,
+  AuthenticatedWatchersRoute: AuthenticatedWatchersRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
-  ActivityRoute: ActivityRoute,
+  AuthRoute: AuthRoute,
   DeskRoute: DeskRoute,
-  DxReportRoute: DxReportRoute,
   MarketsRoute: MarketsRoute,
-  ReceiptRoute: ReceiptRoute,
-  ReviewRoute: ReviewRoute,
-  SimulateRoute: SimulateRoute,
-  WatchersRoute: WatchersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
