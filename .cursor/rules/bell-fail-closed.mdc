@@ -1,0 +1,23 @@
+---
+description: BELL fail-closed integrations — no mocks or silent fallbacks
+globs: src/lib/**/*.ts,src/routes/**/*.tsx,src/hooks/**/*.ts*
+alwaysApply: false
+---
+
+# Fail-closed integrations
+
+```ts
+// BAD — silent fake
+catch { return { price: 248.31, session: "open" }; }
+
+// GOOD — labeled failure
+catch (e) {
+  return { ok: false as const, mode: "unavailable", reason: "rwa_status_fetch_failed", detail: String(e) };
+}
+```
+
+- Every adapter returns `{ ok, mode, ... }` where mode ∈ `mainnet-read | quote-only | simulate | broadcast | unavailable`.
+- UI must show mode badges; never imply a broadcast fill from a quote or simulate.
+- Desk DENY/ALLOW is **server-enforced** — never trust client-only React state for broadcast.
+- `referencePrice` from RWA APIs ≠ official NYSE — label carefully; gate on status + toxic gap.
+- If Binance Web3 signing keys missing, Trading/Transaction paths return `unavailable` (fail-closed), do not invent quotes.
