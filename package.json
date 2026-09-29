@@ -14,7 +14,8 @@
     "test:watch": "vitest",
     "tor:start": "bash scripts/tor-start.sh",
     "smoke:llm": "bun run scripts/smoke-llm-tor.ts",
-    "smoke:rwa": "bun run scripts/smoke-rwa.ts"
+    "smoke:rwa": "bun run scripts/smoke-rwa.ts",
+    "db:apply": "bun run scripts/apply-neon-schema.ts"
   },
   "overrides": {
     "rolldown": "1.2.1"
@@ -23,6 +24,9 @@
     "@ai-sdk/openai": "^4.0.72",
     "@hookform/resolvers": "^5.2.2",
     "@lovable.dev/cloud-auth-js": "^1.1.2",
+    "@neondatabase/auth": "^0.5.0-beta",
+    "@neondatabase/auth-ui": "^0.3.0-beta",
+    "@neondatabase/serverless": "^1.1.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.8",
@@ -56,12 +60,14 @@
     "@tanstack/react-start": "1.168.32",
     "@tanstack/router-plugin": "1.168.23",
     "ai": "^7.0.107",
+    "better-auth": "^1.7.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
+    "jose": "^6",
     "lucide-react": "^0.575.0",
     "react": "^19.2.0",
     "react-day-picker": "^9.14.0",

@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireNeonAuth } from "@/integrations/neon/auth-middleware";
 import { agentRouterConfigured, liveChat } from "@/lib/llm/agent-router";
 
 const Input = z.object({
@@ -13,14 +13,14 @@ const SYSTEM =
   "You write concise, risk-aware trade briefs for BELL, a closed-session honesty product for BSC tokenized stocks. Never provide personalized financial advice, invent prices, imply execution, or call a reference price an official exchange price. Treat the supplied session state as authoritative. Use exactly four short sections with these headings: SETUP, SESSION RISK, INVALIDATION, BEFORE ACTING. Keep the entire response under 180 words. If closed, stress stale-reference and reopening-gap risk. If halted, stress that no action should proceed until status clears. End with: Not investment advice.";
 
 export const generateTradeBrief = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireNeonAuth])
   .inputValidator((input: unknown) => Input.parse(input))
   .handler(async ({ data, context }) => {
     if (!agentRouterConfigured() && !process.env["LOVABLE_API_KEY"]) {
       return {
         ok: false as const,
         error:
-          "AI is not configured — set AGENTROUTER_API_KEY (Tor/relay) or LOVABLE_API_KEY. No mock brief.",
+          "AI is not configured — set AGENTROUTER_API_KEY (Tor/relay), Vercel AI Gateway, or LOVABLE_API_KEY. No mock brief.",
       };
     }
 
@@ -34,11 +34,10 @@ export const generateTradeBrief = createServerFn({ method: "POST" })
         maxTokens: 500,
       });
       if (!chat.ok) {
-        // Do not silently fall back to Lovable if AgentRouter was configured but failed
         if (!process.env["LOVABLE_API_KEY"]) {
           return {
             ok: false as const,
-            error: `AgentRouter unavailable (${chat.path}): ${chat.error}`,
+            error: `LLM unavailable (${chat.path}): ${chat.error}`,
           };
         }
       } else {
@@ -86,36 +85,45 @@ export const generateTradeBrief = createServerFn({ method: "POST" })
       };
     }
 
-    const { data: saved, error } = await context.supabase
-      .from("trade_briefs")
-      .insert({
-        user_id: context.userId,
-        symbol: data.symbol,
-        session_state: data.sessionState,
-        thesis: data.thesis,
-        brief: briefText,
-      })
-      .select("id, symbol, session_state, thesis, brief, created_at")
-      .single();
-    if (error) throw new Error(error.message);
-    await context.supabase.from("activity_history").insert({
-      user_id: context.userId,
-      event_type: "trade_brief",
-      symbol: data.symbol,
-      state: "Briefed",
-      detail: `${data.sessionState} session · AI risk brief saved · ${path}`,
-    });
+    const savedRows = await context.sql`
+      INSERT INTO public.trade_briefs (
+        user_id, symbol, session_state, thesis, brief
+      )
+      VALUES (
+        ${context.userId},
+        ${data.symbol},
+        ${data.sessionState},
+        ${data.thesis},
+        ${briefText}
+      )
+      RETURNING id, symbol, session_state, thesis, brief, created_at
+    `;
+    const saved = savedRows[0];
+    if (!saved) throw new Error("trade brief insert failed");
+
+    await context.sql`
+      INSERT INTO public.activity_history (
+        user_id, event_type, symbol, state, detail
+      )
+      VALUES (
+        ${context.userId},
+        ${"trade_brief"},
+        ${data.symbol},
+        ${"Briefed"},
+        ${`${data.sessionState} session · AI risk brief saved · ${path}`}
+      )
+    `;
     return { ok: true as const, brief: saved, path };
   });
 
 export const listTradeBriefs = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireNeonAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
-      .from("trade_briefs")
-      .select("id, symbol, session_state, thesis, brief, created_at")
-      .order("created_at", { ascending: false })
-      .limit(20);
-    if (error) throw new Error(error.message);
-    return data;
+    return context.sql`
+      SELECT id, symbol, session_state, thesis, brief, created_at
+      FROM public.trade_briefs
+      WHERE user_id = ${context.userId}
+      ORDER BY created_at DESC
+      LIMIT 20
+    `;
   });

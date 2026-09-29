@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireNeonAuth } from "@/integrations/neon/auth-middleware";
+import { getNeonSql } from "@/integrations/neon/db";
 import {
   bellSessionClearCookieHeader,
   bellSessionSetCookieHeader,
@@ -8,59 +9,57 @@ import {
   type TenantMembership,
 } from "@/lib/auth/session";
 
-async function ensurePersonalTenant(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  supabase: any,
-  userId: string,
-): Promise<TenantMembership[]> {
-  const { data: existing } = await supabase
-    .from("tenant_members")
-    .select("tenant_id, user_id, role, wallet_address, tenants(slug, display_name)")
-    .eq("user_id", userId);
+async function ensurePersonalTenant(userId: string): Promise<TenantMembership[]> {
+  const sql = getNeonSql();
 
-  if (existing && existing.length > 0) {
-    return existing.map(
-      (row: {
-        tenant_id: string;
-        user_id: string;
-        role: "owner" | "trader" | "viewer";
-        wallet_address: string | null;
-        tenants: { slug: string; display_name: string } | null;
-      }) => ({
-        tenantId: row.tenant_id,
-        userId: row.user_id,
-        role: row.role,
-        walletAddress: row.wallet_address,
-        slug: row.tenants?.slug ?? null,
-        displayName: row.tenants?.display_name ?? null,
-      }),
-    );
+  const existing = await sql`
+    SELECT
+      m.tenant_id,
+      m.user_id,
+      m.role,
+      m.wallet_address,
+      t.slug,
+      t.display_name
+    FROM public.tenant_members m
+    JOIN public.tenants t ON t.id = m.tenant_id
+    WHERE m.user_id = ${userId}
+  `;
+
+  if (existing.length > 0) {
+    return existing.map((row) => ({
+      tenantId: String(row.tenant_id),
+      userId: String(row.user_id),
+      role: row.role as "owner" | "trader" | "viewer",
+      walletAddress: (row.wallet_address as string | null) ?? null,
+      slug: (row.slug as string | null) ?? null,
+      displayName: (row.display_name as string | null) ?? null,
+    }));
   }
 
-  const slug = `desk-${userId.replace(/-/g, "").slice(0, 10)}`;
-  const { data: tenant, error: tErr } = await supabase
-    .from("tenants")
-    .insert({ slug, display_name: "Personal desk" })
-    .select("id, slug, display_name")
-    .single();
-  if (tErr || !tenant) {
-    // Table may not be migrated yet — fail closed with empty tenants
-    return [];
-  }
-  const { error: mErr } = await supabase.from("tenant_members").insert({
-    tenant_id: tenant.id,
-    user_id: userId,
-    role: "owner",
-  });
-  if (mErr) return [];
+  const slug = `desk-${userId.replace(/[^a-zA-Z0-9]/g, "").slice(0, 10)}`;
+  const tenants = await sql`
+    INSERT INTO public.tenants (slug, display_name)
+    VALUES (${slug}, ${"Personal desk"})
+    ON CONFLICT (slug) DO UPDATE SET display_name = EXCLUDED.display_name
+    RETURNING id, slug, display_name
+  `;
+  const tenant = tenants[0];
+  if (!tenant) return [];
+
+  await sql`
+    INSERT INTO public.tenant_members (tenant_id, user_id, role)
+    VALUES (${tenant.id}, ${userId}, ${"owner"})
+    ON CONFLICT DO NOTHING
+  `;
+
   return [
     {
-      tenantId: tenant.id,
+      tenantId: String(tenant.id),
       userId,
       role: "owner",
       walletAddress: null,
-      slug: tenant.slug,
-      displayName: tenant.display_name,
+      slug: String(tenant.slug),
+      displayName: String(tenant.display_name),
     },
   ];
 }
@@ -69,11 +68,11 @@ export const getBellSessionStatus = createServerFn({ method: "GET" }).handler(as
   getSessionAuthStatus(),
 );
 
-/** Mint httpOnly bell_session after Supabase auth. */
+/** Mint httpOnly bell_session after Neon Auth. */
 export const mintHttpOnlySession = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireNeonAuth])
   .handler(async ({ context }) => {
-    const tenants = await ensurePersonalTenant(context.supabase, context.userId);
+    const tenants = await ensurePersonalTenant(context.userId);
     const minted = mintBellSession({
       userId: context.userId,
       tenants,

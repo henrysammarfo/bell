@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { NeonAuthUIProvider } from "@neondatabase/auth-ui";
+import { authClient, neonAuthConfigured } from "@/integrations/neon/auth-client";
+import "@neondatabase/auth-ui/css";
 
 function NotFoundComponent() {
   return (
@@ -118,11 +121,15 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-
-  return (
+  const tree = (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
   );
+
+  if (neonAuthConfigured() && authClient) {
+    return <NeonAuthUIProvider authClient={authClient}>{tree}</NeonAuthUIProvider>;
+  }
+  return tree;
 }

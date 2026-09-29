@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireNeonAuth } from "@/integrations/neon/auth-middleware";
 import { evaluateSessionGate } from "@/lib/adapters/session-gate";
 import { quoteAndSimulate } from "@/lib/adapters/binance-trading";
 
@@ -21,7 +21,7 @@ const BroadcastInput = z.object({
 });
 
 export const simulateTrade = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireNeonAuth])
   .inputValidator((input: unknown) => SimInput.parse(input))
   .handler(async ({ data }) => {
     const gate = await evaluateSessionGate({
@@ -61,7 +61,7 @@ export const simulateTrade = createServerFn({ method: "POST" })
  * Never invents a tx hash.
  */
 export const broadcastTrade = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireNeonAuth])
   .inputValidator((input: unknown) => BroadcastInput.parse(input))
   .handler(async ({ data }) => {
     const gate = await evaluateSessionGate({

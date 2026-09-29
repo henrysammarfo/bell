@@ -2,7 +2,7 @@
  * Live DX evidence collector — real status codes for the DX report (25% scoring).
  */
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireNeonAuth } from "@/integrations/neon/auth-middleware";
 import {
   RWA_LIST_URL,
   RWA_MARKET_STATUS_URL,
@@ -22,7 +22,7 @@ export type DxEvidenceRow = {
 };
 
 export const collectDxEvidence = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireNeonAuth])
   .handler(async () => {
     const rows: DxEvidenceRow[] = [];
 
@@ -81,14 +81,23 @@ export const collectDxEvidence = createServerFn({ method: "GET" })
       signedAuth: sess.ok ? "hmac" : "n/a",
     });
 
-    // AgentRouter config (no live call from DX to avoid WAF noise)
+    // LLM paths (AgentRouter Tor/relay + Vercel AI Gateway WAF bypass)
+    const gatewayReady = Boolean(
+      process.env["AI_GATEWAY_API_KEY"]?.trim() ||
+        process.env["VERCEL_OIDC_TOKEN"]?.trim() ||
+        process.env["VERCEL"] === "1",
+    );
     rows.push({
-      name: "AgentRouter LLM config",
+      name: "LLM config (AgentRouter + Vercel AI Gateway)",
       httpStatus: null,
-      ok: agentRouterConfigured(),
-      detail: getAgentRouterKey()
-        ? `key present · tor=${process.env["AGENTROUTER_USE_TOR"] ?? "0"} · relay=${process.env["BELL_LLM_RELAY_URL"] ? "set" : "unset"}`
-        : "AGENTROUTER_API_KEY missing",
+      ok: agentRouterConfigured() || gatewayReady,
+      detail: [
+        getAgentRouterKey()
+          ? `agentrouter key · tor=${process.env["AGENTROUTER_USE_TOR"] ?? "0"}`
+          : "agentrouter unset",
+        process.env["BELL_LLM_RELAY_URL"] ? "relay=set" : "relay=unset",
+        gatewayReady ? "vercel-ai-gateway=ready" : "vercel-ai-gateway=unset",
+      ].join(" · "),
       signedAuth: "bearer",
     });
 

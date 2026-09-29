@@ -5,8 +5,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { BellLogo } from "@/components/bell-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { lovable } from "@/integrations/lovable";
-import { supabase } from "@/integrations/supabase/client";
+import { authClient, neonAuthConfigured } from "@/integrations/neon/auth-client";
 import { mintHttpOnlySession } from "@/lib/session.functions";
 
 export const Route = createFileRoute("/auth")({
@@ -43,6 +42,7 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -56,52 +56,57 @@ function AuthPage() {
     try {
       const minted = await mint();
       if (minted.ok && minted.setCookie && typeof document !== "undefined") {
-        // Best-effort client hint; server Set-Cookie should be preferred when wired via response headers.
         document.cookie = minted.setCookie;
       }
     } catch {
-      // Session mint is best-effort — Supabase auth still valid; httpOnly may be unavailable without secret.
+      // Session mint is best-effort — Neon Auth still valid; httpOnly may need BELL_SESSION_SECRET.
     }
     void navigate({ to: next });
   }
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) void afterAuth();
+    if (!neonAuthConfigured() || !authClient) return;
+    authClient.getSession().then(({ data }) => {
+      if (data?.user) void afterAuth();
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function submit(event: FormEvent) {
     event.preventDefault();
-    setBusy(true);
-    setMessage("");
-    const result =
-      mode === "signin"
-        ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              emailRedirectTo: window.location.origin + next,
-            },
-          });
-    setBusy(false);
-    if (result.error) {
-      setMessage(result.error.message);
+    if (!authClient) {
+      setMessage("Neon Auth is not configured (VITE_NEON_AUTH_URL).");
       return;
     }
-    if (result.data.session) void afterAuth();
-    else setMessage("Check your email to confirm your account, then sign in.");
-  }
-
-  async function google() {
-    sessionStorage.setItem("bell-auth-next", next);
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/auth",
-    });
-    if (result.error) setMessage(result.error.message);
-    else if (!result.redirected) void afterAuth();
+    setBusy(true);
+    setMessage("");
+    try {
+      if (mode === "signin") {
+        const result = await authClient.signIn.email({ email, password });
+        setBusy(false);
+        if (result.error) {
+          setMessage(result.error.message ?? "Sign in failed");
+          return;
+        }
+        void afterAuth();
+        return;
+      }
+      const result = await authClient.signUp.email({
+        email,
+        password,
+        name: name.trim() || email.split("@")[0] || "Trader",
+      });
+      setBusy(false);
+      if (result.error) {
+        setMessage(result.error.message ?? "Sign up failed");
+        return;
+      }
+      if (result.data?.user || result.data?.session) void afterAuth();
+      else setMessage("Check your email to confirm your account, then sign in.");
+    } catch (e) {
+      setBusy(false);
+      setMessage(e instanceof Error ? e.message : String(e));
+    }
   }
 
   return (
@@ -112,8 +117,8 @@ function AuthPage() {
           <p className="eyebrow">Private trader workspace</p>
           <h1>Keep every decision accountable.</h1>
           <p>
-            Your briefs, watchers, simulations, activity, and DX notes stay tied to your account —
-            httpOnly session when configured.
+            Neon Auth sessions with httpOnly BELL desk cookies when configured — no auth secrets in
+            localStorage.
           </p>
         </div>
         <Bell className="auth-watermark" />
@@ -122,13 +127,23 @@ function AuthPage() {
         <form className="panel auth-form" onSubmit={submit}>
           <span className="kicker">Trader access</span>
           <h2>{mode === "signin" ? "Welcome back" : "Create your account"}</h2>
-          <p>Continue with Google or use your email.</p>
-          <Button type="button" variant="outline" className="w-full" onClick={google}>
-            G Continue with Google
-          </Button>
-          <div className="auth-divider">
-            <span>or</span>
-          </div>
+          <p>Email sign-in via Neon Managed Better Auth on the Bell project.</p>
+          {!neonAuthConfigured() && (
+            <p className="form-message" role="alert">
+              VITE_NEON_AUTH_URL is missing — connect Neon Marketplace on Vercel (Bell).
+            </p>
+          )}
+          {mode === "signup" && (
+            <label>
+              Display name
+              <Input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Desk name"
+              />
+            </label>
+          )}
           <label>
             Email
             <Input
@@ -155,7 +170,7 @@ function AuthPage() {
               {message}
             </p>
           )}
-          <Button className="w-full" disabled={busy}>
+          <Button className="w-full" disabled={busy || !neonAuthConfigured()}>
             <Mail />
             {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
           </Button>

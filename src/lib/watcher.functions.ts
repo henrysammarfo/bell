@@ -4,7 +4,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireNeonAuth } from "@/integrations/neon/auth-middleware";
 import { evaluateSessionGate } from "@/lib/adapters/session-gate";
 
 const RunInput = z.object({
@@ -21,25 +21,17 @@ export type WatcherHit = {
 };
 
 export const runSessionWatcher = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireNeonAuth])
   .inputValidator((input: unknown) => RunInput.parse(input))
   .handler(async ({ data, context }) => {
-    const { data: items, error } = await context.supabase
-      .from("watchlist_items")
-      .select("id, symbol, rule, active")
-      .eq("user_id", context.userId)
-      .eq("active", true)
-      .limit(20);
-    if (error) {
-      return {
-        ok: false as const,
-        mode: "unavailable" as const,
-        reason: "watchlist_fetch_failed",
-        detail: error.message,
-        hits: [] as WatcherHit[],
-      };
-    }
-    if (!items?.length) {
+    const items = await context.sql`
+      SELECT id, symbol, rule, active
+      FROM public.watchlist_items
+      WHERE user_id = ${context.userId} AND active = true
+      LIMIT 20
+    `;
+
+    if (!items.length) {
       return {
         ok: true as const,
         mode: "mainnet-read" as const,
@@ -51,13 +43,13 @@ export const runSessionWatcher = createServerFn({ method: "POST" })
     const hits: WatcherHit[] = [];
     for (const item of items) {
       const gate = await evaluateSessionGate({
-        ticker: item.symbol,
+        ticker: String(item.symbol),
         gapMode: data.gapMode,
         gapAcknowledged: data.gapMode,
       });
       if (!gate.ok) {
         hits.push({
-          symbol: item.symbol,
+          symbol: String(item.symbol),
           decision: "DENY",
           sessionLabel: "halted",
           gapLabel: "n/a",
@@ -67,20 +59,25 @@ export const runSessionWatcher = createServerFn({ method: "POST" })
         continue;
       }
       hits.push({
-        symbol: item.symbol,
+        symbol: String(item.symbol),
         decision: gate.data.decision,
         sessionLabel: gate.data.sessionLabel,
         gapLabel: gate.data.gapLabel,
         reasons: gate.data.reasons,
         mode: gate.data.mode,
       });
-      await context.supabase.from("activity_history").insert({
-        user_id: context.userId,
-        event_type: "watcher_check",
-        symbol: item.symbol,
-        state: gate.data.decision,
-        detail: `Watcher · ${gate.data.sessionLabel} · gap ${gate.data.gapLabel}`,
-      });
+      await context.sql`
+        INSERT INTO public.activity_history (
+          user_id, event_type, symbol, state, detail
+        )
+        VALUES (
+          ${context.userId},
+          ${"watcher_check"},
+          ${String(item.symbol)},
+          ${gate.data.decision},
+          ${`Watcher · ${gate.data.sessionLabel} · gap ${gate.data.gapLabel}`}
+        )
+      `;
     }
 
     return {

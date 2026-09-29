@@ -1,7 +1,14 @@
 /**
- * AgentRouter gateway for BELL (VIGIL pattern).
- * Direct cloud egress often hits Aliyun WAF — use Tor SOCKS or BELL_LLM_RELAY_URL.
- * Host: https://agentrouter.org only. Never put key in VITE_*.
+ * LLM gateway for BELL.
+ *
+ * Aliyun WAF blocks direct cloud egress to agentrouter.org.
+ * Paths (in order):
+ *   1. BELL_LLM_RELAY_URL — clean-egress relay (CF Worker / GCP)
+ *   2. Vercel AI Gateway — novel WAF bypass on Vercel (OIDC / AI_GATEWAY_API_KEY)
+ *   3. AgentRouter + Tor SOCKS — Cursor/GCP VMs
+ *   4. AgentRouter direct — local only (usually WAF on cloud)
+ *
+ * Host for AgentRouter: https://agentrouter.org only. Never put key in VITE_*.
  */
 
 import * as https from "node:https";
@@ -22,8 +29,20 @@ export function getAgentRouterKey(): string | null {
   );
 }
 
+function vercelAiGatewayReady(): boolean {
+  return Boolean(
+    process.env["AI_GATEWAY_API_KEY"]?.trim() ||
+      process.env["VERCEL_OIDC_TOKEN"]?.trim() ||
+      process.env["VERCEL"] === "1",
+  );
+}
+
 export function agentRouterConfigured(): boolean {
-  return Boolean(getAgentRouterKey() || process.env["BELL_LLM_RELAY_URL"]?.trim());
+  return Boolean(
+    getAgentRouterKey() ||
+      process.env["BELL_LLM_RELAY_URL"]?.trim() ||
+      vercelAiGatewayReady(),
+  );
 }
 
 function defaultModel(): string {
@@ -31,6 +50,14 @@ function defaultModel(): string {
     process.env["BELL_LLM_MODEL"]?.trim() ||
     process.env["VIGIL_LLM_MODEL"]?.trim() ||
     "deepseek-v4-flash"
+  );
+}
+
+function gatewayModel(): string {
+  return (
+    process.env["BELL_AI_GATEWAY_MODEL"]?.trim() ||
+    process.env["AI_GATEWAY_MODEL"]?.trim() ||
+    "openai/gpt-5.4-mini"
   );
 }
 
@@ -124,6 +151,51 @@ function looksLikeWaf(text: string): boolean {
   );
 }
 
+function parseChatContent(text: string): string | null {
+  try {
+    const json = JSON.parse(text) as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+    return json.choices?.[0]?.message?.content?.trim() || null;
+  } catch {
+    return null;
+  }
+}
+
+/** Novel production path: Vercel AI Gateway (OIDC) — bypasses AgentRouter Aliyun WAF. */
+async function liveChatViaVercelAiGateway(opts: {
+  user: string;
+  system?: string;
+  maxTokens?: number;
+}): Promise<LiveChatResult> {
+  if (!vercelAiGatewayReady()) {
+    return { ok: false, error: "Vercel AI Gateway not configured", path: "vercel-ai-gateway" };
+  }
+  try {
+    const { generateText } = await import("ai");
+    const { gateway } = await import("@ai-sdk/gateway");
+    const modelId = gatewayModel();
+    const result = await generateText({
+      model: gateway(modelId),
+      system: opts.system,
+      prompt: opts.user,
+      maxOutputTokens: opts.maxTokens ?? 600,
+      temperature: 0.2,
+    });
+    const text = result.text?.trim();
+    if (!text) {
+      return { ok: false, error: "vercel-ai-gateway empty content", path: "vercel-ai-gateway" };
+    }
+    return { ok: true, text, model: modelId, path: "vercel-ai-gateway" };
+  } catch (e) {
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : String(e),
+      path: "vercel-ai-gateway",
+    };
+  }
+}
+
 export async function liveChat(opts: {
   user: string;
   system?: string;
@@ -145,7 +217,7 @@ export async function liveChat(opts: {
     messages,
   };
 
-  // Path 1: clean-egress relay (Vercel)
+  // Path 1: clean-egress relay
   if (relay) {
     if (!relayKey) {
       return {
@@ -161,36 +233,33 @@ export async function liveChat(opts: {
         body,
       );
       if (looksLikeWaf(text)) {
-        return { ok: false, error: "WAF_BLOCKED on relay", path: "relay" };
+        // Fall through to Vercel AI Gateway / Tor
+      } else if (status < 400) {
+        const content = parseChatContent(text);
+        if (content) return { ok: true, text: content, model, path: "relay" };
       }
-      if (status >= 400) {
-        return {
-          ok: false,
-          error: `relay HTTP ${status}: ${text.slice(0, 200)}`,
-          path: "relay",
-        };
-      }
-      const json = JSON.parse(text) as {
-        choices?: Array<{ message?: { content?: string } }>;
-      };
-      const content = json.choices?.[0]?.message?.content?.trim();
-      if (!content) {
-        return { ok: false, error: "relay empty content", path: "relay" };
-      }
-      return { ok: true, text: content, model, path: "relay" };
-    } catch (e) {
-      return {
-        ok: false,
-        error: e instanceof Error ? e.message : String(e),
-        path: "relay",
-      };
+    } catch {
+      // fall through
     }
   }
 
+  // Path 2: Vercel AI Gateway (production WAF bypass — preferred on Vercel)
+  if (vercelAiGatewayReady() && (process.env["VERCEL"] === "1" || !torEnabled())) {
+    const gw = await liveChatViaVercelAiGateway(opts);
+    if (gw.ok) return gw;
+    // If gateway fails and we have Tor/AgentRouter, continue
+    if (!key) return gw;
+  }
+
   if (!key) {
+    // Last chance: try gateway even off Vercel if OIDC/key present
+    if (vercelAiGatewayReady()) {
+      return liveChatViaVercelAiGateway(opts);
+    }
     return {
       ok: false,
-      error: "AGENTROUTER_API_KEY missing and no BELL_LLM_RELAY_URL — fail closed (no mock brief)",
+      error:
+        "AGENTROUTER_API_KEY missing and no BELL_LLM_RELAY_URL / Vercel AI Gateway — fail closed (no mock brief)",
       path: "none",
     };
   }
@@ -204,29 +273,39 @@ export async function liveChat(opts: {
       : await postJsonViaFetch(url, stainlessHeaders(key), body);
 
     if (looksLikeWaf(text)) {
+      // Novel fallback: if WAF hits and gateway is available, use it
+      if (vercelAiGatewayReady()) {
+        const gw = await liveChatViaVercelAiGateway(opts);
+        if (gw.ok) return gw;
+      }
       return {
         ok: false,
         error:
-          "WAF_BLOCKED — set AGENTROUTER_USE_TOR=1 with Tor SOCKS, or BELL_LLM_RELAY_URL for Vercel",
+          "WAF_BLOCKED — set AGENTROUTER_USE_TOR=1 with Tor SOCKS, BELL_LLM_RELAY_URL, or use Vercel AI Gateway",
         path: pathLabel,
       };
     }
     if (status >= 400) {
+      if (vercelAiGatewayReady()) {
+        const gw = await liveChatViaVercelAiGateway(opts);
+        if (gw.ok) return gw;
+      }
       return {
         ok: false,
         error: `agentrouter HTTP ${status}: ${text.slice(0, 200)}`,
         path: pathLabel,
       };
     }
-    const json = JSON.parse(text) as {
-      choices?: Array<{ message?: { content?: string } }>;
-    };
-    const content = json.choices?.[0]?.message?.content?.trim();
+    const content = parseChatContent(text);
     if (!content) {
       return { ok: false, error: "empty content", path: pathLabel };
     }
     return { ok: true, text: content, model, path: pathLabel };
   } catch (e) {
+    if (vercelAiGatewayReady()) {
+      const gw = await liveChatViaVercelAiGateway(opts);
+      if (gw.ok) return gw;
+    }
     return {
       ok: false,
       error: e instanceof Error ? e.message : String(e),
