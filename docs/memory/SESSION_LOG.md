@@ -1,5 +1,13 @@
 # BELL — SESSION LOG
 
+## 2026-09-30 — Binance Web3 keys wired
+
+- Received developer-portal BX- API key (Trade/Transaction/Wallet/Market/DeFi).
+- Stored on Bell Vercel + local `.env` / `.env.local` only — **not git**.
+- Confirmed OpenAPI paths: `GET https://web3.binance.com/api/v1/swap/quote` and `/api/v1/transaction/simulate` (HMAC + `X-MBX-APIKEY`).
+- Cursor VM egress → Binance `451` geo eligibility (honest fail-closed). Keys present smoke: `smoke_binance_keys_ok`.
+- Broadcast still fail-closed until Agentic Wallet session.
+
 ## 2026-09-29 — Neon Marketplace + Auth + WAF bypass
 
 - Confirmed Vercel project **bell** (not Vigil) · team `teamtitanlink`.

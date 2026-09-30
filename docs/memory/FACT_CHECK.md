@@ -32,4 +32,4 @@
 | Tavily new key returns search results | Verified |
 | TinyFish Search with `X-API-Key` returns results | Verified |
 | AgentRouter direct from cloud IP returns Aliyun WAF HTML | Verified |
-| Binance signed Trading/Transaction | **Unverified in this repo** — needs Web3 API key |
+| Binance signed Trading/Transaction | Paths live: `/api/v1/swap/quote` + `/api/v1/transaction/simulate` on `web3.binance.com` · keys set · Cursor egress `451` geo |

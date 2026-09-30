@@ -15,6 +15,7 @@
     "tor:start": "bash scripts/tor-start.sh",
     "smoke:llm": "bun run scripts/smoke-llm-tor.ts",
     "smoke:rwa": "bun run scripts/smoke-rwa.ts",
+    "smoke:binance": "bun run scripts/smoke-binance-web3.ts",
     "db:apply": "bun run scripts/apply-neon-schema.ts"
   },
   "overrides": {

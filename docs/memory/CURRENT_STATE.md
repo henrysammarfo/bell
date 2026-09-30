@@ -18,7 +18,7 @@ Closed-session honesty for BSC tokenized stocks. Fail closed on stale weekend pr
 | Neon Managed Better Auth | **Live** — `VITE_NEON_AUTH_URL` / JWKS / email auth UI |
 | httpOnly multi-tenant sessions | `BELL_SESSION_SECRET` set on Bell Vercel |
 | AI trade briefs | AgentRouter+Tor (Cursor) · **Vercel AI Gateway** WAF bypass (prod) · optional relay |
-| Binance Trading / Transaction | Fail-closed until `BINANCE_WEB3_*` |
+| Binance Trading / Transaction | **Keys on Bell Vercel** · OpenAPI `/api/v1/swap/quote` + `/transaction/simulate` · Cursor egress often `451` geo · broadcast still needs Agentic Wallet |
 | Agentic Wallet broadcast | Fail-closed `agentic_wallet_not_connected` |
 | Session watcher / DX evidence | Live |
 
@@ -28,5 +28,6 @@ Receipt never invents `0x…` hashes. Mode badges required. Residual risk in `TH
 
 ## Blocked on Henry
 
-1. `BINANCE_WEB3_API_KEY` + `SECRET` for signed Transaction simulate / broadcast  
-2. Optional: claim Neon project if still claimable; custom SMTP for Neon Auth emails in prod  
+1. **Rotate** Binance Web3 keys (pasted in chat) after hack; click portal “I have Saved”
+2. Agentic Wallet connect for broadcast (keys alone ≠ tx hash)
+3. Optional: Neon Auth custom SMTP for production email verification links 

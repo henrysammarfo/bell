@@ -101,18 +101,28 @@ export const collectDxEvidence = createServerFn({ method: "GET" })
       signedAuth: "bearer",
     });
 
-    // Binance signed trading readiness
+    // Binance signed trading readiness + live OpenAPI probe
     const apiKey = process.env["BINANCE_WEB3_API_KEY"]?.trim();
     const secret = process.env["BINANCE_WEB3_API_SECRET"]?.trim();
     let sigProbe = "keys missing";
+    let httpStatus: number | null = null;
+    let signedOk = false;
     if (apiKey && secret) {
-      sigProbe = `HMAC sample ${signQuery(secret, "timestamp=1").slice(0, 12)}…`;
+      const { probeBinanceWeb3Signing } = await import("@/lib/adapters/binance-trading");
+      const probe = await probeBinanceWeb3Signing();
+      httpStatus = probe.quoteStatus;
+      signedOk = probe.keysPresent && !probe.detail.includes("geo-restricted");
+      sigProbe = `${probe.detail} · HMAC ${signQuery(secret, "timestamp=1").slice(0, 12)}…`;
     }
     rows.push({
       name: "Binance Web3 Trading/Transaction signing",
-      httpStatus: null,
+      httpStatus,
       ok: Boolean(apiKey && secret),
-      detail: sigProbe,
+      detail: signedOk
+        ? sigProbe
+        : apiKey && secret
+          ? `${sigProbe} (keys set; live quote may need allowed-region egress)`
+          : sigProbe,
       signedAuth: apiKey && secret ? "hmac" : "n/a",
     });
 
