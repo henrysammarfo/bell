@@ -231,15 +231,30 @@ export async function broadcastSwap(opts: {
     return errResult(
       "bell.broadcast",
       "binance_web3_keys_missing",
-      "Broadcast requires BINANCE_WEB3_API_KEY/SECRET and Agentic Wallet — no fake tx hash.",
+      "Set BINANCE_WEB3_API_KEY/SECRET (developer portal) — still required alongside Agentic Wallet.",
     );
   }
-  // Agentic Wallet path — fail closed until wallet session wired.
-  return errResult(
-    "bell.broadcast",
-    "agentic_wallet_not_connected",
-    `Keys present but Agentic Wallet session not connected for ${opts.symbol ?? opts.ticker}. Connect Binance Web3 Wallet, then retry. Amount ${opts.amountUsdt} USDT · contract ${opts.contractAddress ?? "n/a"}.`,
-  );
+  if (!opts.contractAddress) {
+    return errResult(
+      "bell.broadcast",
+      "missing_contract",
+      "No BSC contract from live RWA list — refuse broadcast.",
+    );
+  }
+
+  const { agenticMarketSwap } = await import("./agentic-wallet");
+  const res = await agenticMarketSwap({
+    amountUsdt: opts.amountUsdt,
+    toTokenAddress: opts.contractAddress,
+    symbol: opts.symbol ?? opts.ticker,
+  });
+  if (!res.ok) return res;
+  return okResult("broadcast", "bell.broadcast", {
+    mode: "broadcast",
+    txHash: res.data.txHash,
+    explorerUrl: res.data.explorerUrl,
+    detail: res.data.detail,
+  });
 }
 
 /** Readiness probe for DX / smokes — never invents a fill. */
