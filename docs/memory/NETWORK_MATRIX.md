@@ -6,8 +6,8 @@
 | RWA market / asset status | Public Binance bapi | `mainnet-read` | `unavailable` |
 | RWA dynamic price / reference | Public Binance bapi | `mainnet-read` | `unavailable` |
 | Session gate | Server | `mainnet-read` | DENY |
-| Trading quote | Binance Web3 Trading API | `quote-only` | `unavailable` |
-| Transaction simulate | Binance Web3 Transaction API | `simulate` | `unavailable` |
+| Trading quote | `GET /api/v1/swap/quote` | `simulate` / `quote-only` | `unavailable` / geo `451` |
+| Transaction simulate | `GET /api/v1/transaction/simulate` | `simulate` | `unavailable` / geo `451` |
 | Broadcast / swap | Agentic Wallet / signed | `broadcast` | `unavailable` |
 | Agent Studio watcher | BNB Agent Studio / cron | labeled runtime | `unavailable` |
 | LLM briefs | AgentRouter (+ Tor/relay) | live model | `unavailable` (no mock) |
