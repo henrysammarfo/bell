@@ -13,11 +13,10 @@ if (!url) {
 }
 
 const sql = neon(url);
-const schemaPath = resolve(
-  import.meta.dir,
-  "../supabase/migrations/20260929120000_bell_tenants.sql",
-);
-const schema = readFileSync(schemaPath, "utf8");
+const migrationFiles = [
+  "20260929120000_bell_tenants.sql",
+  "20261001120000_bell_gift_boxes.sql",
+];
 
 /** Split on semicolons that end statements (not inside comments). */
 function splitStatements(raw: string): string[] {
@@ -32,19 +31,22 @@ function splitStatements(raw: string): string[] {
     .filter((s) => s.length > 0);
 }
 
-const statements = splitStatements(schema);
-console.log(`Applying ${statements.length} statements from ${schemaPath}`);
-
 let ok = 0;
-for (const stmt of statements) {
-  try {
-    await sql.query(stmt);
-    ok++;
-    console.log("OK", stmt.slice(0, 72).replace(/\s+/g, " "));
-  } catch (e) {
-    console.error("FAIL", stmt.slice(0, 72).replace(/\s+/g, " "));
-    console.error(e instanceof Error ? e.message : e);
-    process.exit(1);
+for (const file of migrationFiles) {
+  const schemaPath = resolve(import.meta.dir, `../supabase/migrations/${file}`);
+  const schema = readFileSync(schemaPath, "utf8");
+  const statements = splitStatements(schema);
+  console.log(`Applying ${statements.length} statements from ${file}`);
+  for (const stmt of statements) {
+    try {
+      await sql.query(stmt);
+      ok++;
+      console.log("OK", stmt.slice(0, 72).replace(/\s+/g, " "));
+    } catch (e) {
+      console.error("FAIL", stmt.slice(0, 72).replace(/\s+/g, " "));
+      console.error(e instanceof Error ? e.message : e);
+      process.exit(1);
+    }
   }
 }
 

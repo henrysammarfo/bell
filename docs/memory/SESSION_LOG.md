@@ -1,5 +1,13 @@
 # BELL — SESSION LOG
 
+## 2026-10-01 — Gift Box pivot ship
+
+- Locked win wedge: tokenized stock **gift box** (payer wraps · claim link · unwrap) — not another Binance buy.
+- Researched JEF/Jefferies JEFx — beachhead stays Ondo/bStock on BSC; demos AAPL/NVDA.
+- Shipped `gift_boxes` Neon migration (applied), `gift.functions`, `/gift`, `/gift/claim/$code`, `/wallet`.
+- Fun ritual UX (box + ribbon + steps) with full session gate + quote/sim + optional Agentic fund.
+- Updated bible soft pitch, about, landing, WIN_CHECKLIST, PIVOT_GIFTBOX.md.
+
 ## 2026-09-30 — Binance Web3 keys wired
 
 - Received developer-portal BX- API key (Trade/Transaction/Wallet/Market/DeFi).

@@ -13,16 +13,18 @@
 
 ## Soft (plain — anyone)
 
-When Wall Street is closed, BELL won’t let you buy a stock token at a fake weekend price.
+**Wrap a tokenized stock as a gift. They unwrap the link — BELL won’t wrap it at a fake weekend price unless you say so.**
 
 ## Unique job
 
-**Closed-session honesty for BSC tokenized stocks.**  
-Organiser problem: on-chain keeps trading after the NY close on a stale reference. BELL fails closed — unless markets are open, or you explicitly choose weekend-gap mode.
+**Session-honest gift boxes for BSC tokenized stocks.**  
+Not another Binance buy screen. Payer wraps; receiver claims. Organiser problem (weekend stale print) is enforced at wrap time — fail closed unless open or explicit weekend-gap.
+
+Deep notes: [`docs/memory/PIVOT_GIFTBOX.md`](memory/PIVOT_GIFTBOX.md)
 
 ## 8-second
 
-Friday night. On-chain NVDA prints far from Thursday’s close. **Denied.** The card shows last cash price, on-chain price, and the gap. Monday open, same size, gap gone → simulate → small buy.
+Friday: gift AAPL $20 → **Denied** (session closed). Monday: wrap → share claim link → friend unwraps into their wallet.
 
 ## Beachhead
 
@@ -30,7 +32,7 @@ EU/APAC non-restricted users buying Ondo/bStocks on BSC via Binance Wallet. Accr
 
 ## Pitch order
 
-1. Weekend fake price pain · 2. Red gate · 3. Why Binance RWA status APIs · 4. Sim then live · 5. Agentic Wallet · 6. Agent Studio · 7. Honest DX report  
+1. Gift box ritual (you pay · they unwrap) · 2. Weekend fake price pain at wrap · 3. RWA status APIs · 4. Quote/sim · 5. Claim link · 6. Agentic Wallet · 7. Honest DX  
 
 Never lead FOLIO share-counts, PnL bots, or “another buy UI.”
 
@@ -77,7 +79,7 @@ Chat-only buy · FOLIO clone · perps · dashboard-only · AI-generated DX fluff
 
 ## Pitch (15s)
 
-Tokenized stocks trade all weekend on a price that isn’t real. BELL won’t buy until the session is honest — or you flip weekend-gap on purpose.
+Send someone a real tokenized stock as a gift box. BELL wraps it only when the session is honest — or you flip weekend-gap on purpose.
 
 ## Identity
 
