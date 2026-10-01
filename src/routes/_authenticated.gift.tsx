@@ -84,7 +84,8 @@ function GiftCompose() {
         : typeof j.freshnessRisk === "number"
           ? `risk ${j.freshnessRisk.toFixed(2)}`
           : "risk n/a";
-    return `Jev · ${honest} · ${timing} · ${fresh}`;
+    const provider = typeof j.provider === "string" && j.provider !== "none" ? ` · via ${j.provider}` : "";
+    return `Jev · ${honest} · ${timing} · ${fresh}${provider}`;
   }
 
   async function checkGate() {

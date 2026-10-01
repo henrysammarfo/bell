@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { Gift, LoaderCircle, Sparkles } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
@@ -103,9 +103,17 @@ function UnwrapGift() {
       <div className="unwrap-shell">
         {loading && <p className="body-muted">Opening the box…</p>}
         {error && !loading && (
-          <div className="panel">
+          <div className="panel unwrap-empty">
+            <Gift className="feature-icon" />
             <h2>No gift here</h2>
             <p>{error}</p>
+            <p className="body-muted">
+              Links are one-time and case-sensitive. Ask the sender for a fresh wrap, or make your
+              own.
+            </p>
+            <Button asChild className="mt-4">
+              <Link to="/gift">Wrap a gift box</Link>
+            </Button>
           </div>
         )}
         {gift && (

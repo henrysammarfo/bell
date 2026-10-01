@@ -1,5 +1,12 @@
 # BELL — SESSION LOG
 
+## 2026-10-01 — Free Jev path + wallet setup docs
+
+- Vercel MCP: Bell has AI Gateway model + AgentRouter/Binance/Neon — **no** `TYPESAFE_API_KEY` / OpenRouter yet.
+- Jev free-first order: TypeSafe console credit → Vercel AI Gateway evaluate → OpenRouter (paid).
+- Wrote `docs/memory/SETUP_JEV_AND_WALLET.md` (Jev + Agentic Wallet pair steps).
+- Polished auth/markets/claim/wallet UX for gift ritual.
+
 ## 2026-10-01 — JEV correction (not JEF)
 
 - User clarified **JEV** = TypeSafe **Jev** System One decision model — not Jefferies JEFx.

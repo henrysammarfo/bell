@@ -88,12 +88,20 @@ function Markets() {
       eyebrow="RWA catalogue · BSC 56"
       title="Markets"
       action={
-        <Button asChild>
-          <Link to="/desk">
-            New intent
-            <ArrowRight />
-          </Link>
-        </Button>
+        <div className="markets-actions">
+          <Button asChild variant="outline">
+            <Link to="/desk">
+              Desk
+              <ArrowRight />
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link to="/gift">
+              Wrap as gift
+              <ArrowRight />
+            </Link>
+          </Button>
+        </div>
       }
     >
       <div className="market-toolbar">

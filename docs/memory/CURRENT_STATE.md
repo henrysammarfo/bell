@@ -18,7 +18,8 @@
 | Neon Postgres + Managed Better Auth | **Live** on project `bell` |
 | httpOnly multi-tenant sessions | `BELL_SESSION_SECRET` on Bell Vercel |
 | AI trade briefs | AgentRouter+Tor · Vercel AI Gateway prod |
-| **Jev** (TypeSafe) gift judgment | Adapter + gift preview/wrap · needs `OPENROUTER_API_KEY` |
+| **Jev** (TypeSafe) gift judgment | Free-first: `TYPESAFE_API_KEY` → AI Gateway → OpenRouter |
+| Setup runbook | `docs/memory/SETUP_JEV_AND_WALLET.md` |
 | Binance Trading / Transaction | Keys on Vercel · quote + simulate · Cursor often `451` |
 | Agentic Wallet (`/wallet` + `baw`) | Status UI + bridge · needs live pair for broadcast |
 | Session watcher / DX evidence | Live |
@@ -33,6 +34,7 @@ Earlier “JEF/Jefferies” was wrong. **JEV = TypeSafe Jev** decision model. Ha
 
 ## Blocked on Henry
 
-1. **Rotate** Binance Web3 keys (pasted in chat) after hack
-2. Agentic Wallet pair for funded wrap + send proof
-3. Optional: Neon Auth custom SMTP
+1. Add **`TYPESAFE_API_KEY`** from [console.typesafe.ai](https://console.typesafe.ai) (~$5 free credit) on Bell Vercel
+2. Pair Agentic Wallet: `bash scripts/baw-connect.sh` → confirm in Binance app → `/wallet` refresh
+3. **Rotate** Binance Web3 keys (pasted in chat) after hack
+4. Optional: Neon Auth custom SMTP

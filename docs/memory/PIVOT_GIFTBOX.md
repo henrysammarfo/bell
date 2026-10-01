@@ -22,7 +22,9 @@ Inspiration (RH Chain peers like Givest / Wrapstocks / tagstock): gift metaphor.
 
 **Jev** = TypeSafe System One decision model (`typesafe/jev-1.13` via OpenRouter Decisions API) — typed noul/choice/score, **not** an LLM and **not** Jefferies JEFx.
 
-BELL uses Jev as a **second opinion** on gift wrap honesty (timing + freshness risk). Hard RWA session gate still owns ALLOW/DENY. Needs `OPENROUTER_API_KEY` (or `BELL_JEV_API_KEY`).
+BELL uses Jev as a **second opinion** on gift wrap honesty (timing + freshness risk). Hard RWA session gate still owns ALLOW/DENY.
+
+**Free path:** TypeSafe console ~$5 signup credit → `TYPESAFE_API_KEY` on Bell Vercel (see `SETUP_JEV_AND_WALLET.md`). OpenRouter is paid-only fallback.
 
 ## User story (8s)
 

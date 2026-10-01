@@ -13,20 +13,19 @@ export const Route = createFileRoute("/auth")({
     next:
       typeof s["next"] === "string" && String(s["next"]).startsWith("/")
         ? String(s["next"])
-        : "/brief",
+        : "/gift",
   }),
   head: () => ({
     meta: [
-      { title: "Trader Access — BELL" },
+      { title: "Sign in — BELL" },
       {
         name: "description",
-        content:
-          "Sign in to save BELL trade briefs, watchlists, simulations, activity, and DX reports.",
+        content: "Sign in to wrap session-honest tokenized stock gifts on BSC.",
       },
-      { property: "og:title", content: "Trader Access — BELL" },
+      { property: "og:title", content: "Sign in — BELL" },
       {
         property: "og:description",
-        content: "Private, persistent BELL trader records.",
+        content: "Wrap gifts. Fail closed on fake weekend prices.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -114,20 +113,20 @@ function AuthPage() {
       <section className="auth-brand">
         <BellLogo />
         <div>
-          <p className="eyebrow">Private trader workspace</p>
-          <h1>Keep every decision accountable.</h1>
+          <p className="eyebrow">Gift boxes · BSC</p>
+          <h1>Wrap a stock. They unwrap it.</h1>
           <p>
-            Neon Auth sessions with httpOnly BELL desk cookies when configured — no auth secrets in
-            localStorage.
+            Sign in to compose session-honest gifts. Neon Auth + httpOnly desk cookies — no secrets
+            in localStorage.
           </p>
         </div>
         <Bell className="auth-watermark" />
       </section>
       <section className="auth-form-wrap">
         <form className="panel auth-form" onSubmit={submit}>
-          <span className="kicker">Trader access</span>
+          <span className="kicker">Your desk</span>
           <h2>{mode === "signin" ? "Welcome back" : "Create your account"}</h2>
-          <p>Email sign-in via Neon Managed Better Auth on the Bell project.</p>
+          <p>Email sign-in via Neon Managed Better Auth — then wrap your first gift.</p>
           {!neonAuthConfigured() && (
             <p className="form-message" role="alert">
               VITE_NEON_AUTH_URL is missing — connect Neon Marketplace on Vercel (Bell).

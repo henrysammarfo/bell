@@ -41,4 +41,19 @@ describe("parseJevGiftAnswers", () => {
     expect(j.timing).toBeNull();
     expect(j.freshnessRisk).toBeNull();
   });
+
+  it("maps AI SDK boolean.probability to wrapHonest", () => {
+    const j = parseJevGiftAnswers(
+      {
+        wrap_honest: { type: "boolean", probability: 0.88 },
+        gift_timing: { type: "choice", choice: "wait_for_open", confidence: 0.7 },
+        freshness_risk: { type: "score", score: 2 },
+      },
+      { provider: "vercel-ai-gateway" },
+    );
+    expect(j.wrapHonest).toBeCloseTo(0.88);
+    expect(j.timing).toBe("wait_for_open");
+    expect(j.freshnessLabel).toMatch(/High/);
+    expect(j.provider).toBe("vercel-ai-gateway");
+  });
 });

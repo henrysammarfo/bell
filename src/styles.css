@@ -79,6 +79,11 @@
 .wallet-address code{font-size:12px;color:var(--safe);word-break:break-all}
 .wallet-steps{margin:18px 0 0;padding-left:18px;color:var(--muted-foreground);font-size:13px;line-height:1.7}
 .wallet-steps li{margin-bottom:8px}
+.wallet-cmd{display:flex;align-items:center;gap:10px;margin-top:16px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:oklch(.08 .006 210)}
+.wallet-cmd svg{width:16px;height:16px;color:var(--warning);flex:none}
+.wallet-cmd code{flex:1;font-size:12px;color:var(--safe);overflow:auto}
+.markets-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.unwrap-empty{text-align:left}
 @keyframes gift-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @keyframes gift-seal{from{transform:scale(.94);opacity:.7}to{transform:scale(1);opacity:1}}
 @keyframes gift-pop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}

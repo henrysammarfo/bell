@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { LoaderCircle, Wallet } from "lucide-react";
+import { Check, Copy, LoaderCircle, Terminal, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,8 @@ export const Route = createFileRoute("/_authenticated/wallet")({
   component: WalletConnect,
 });
 
+const PAIR_CMD = "bash scripts/baw-connect.sh";
+
 function WalletConnect() {
   const fetchStatus = useServerFn(fetchAgenticWalletStatus);
   const [busy, setBusy] = useState(true);
@@ -27,6 +29,7 @@ function WalletConnect() {
   const [address, setAddress] = useState<string | null>(null);
   const [detail, setDetail] = useState("");
   const [howTo, setHowTo] = useState<string[]>([]);
+  const [copied, setCopied] = useState(false);
 
   async function refresh() {
     setBusy(true);
@@ -49,6 +52,11 @@ function WalletConnect() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only
   }, []);
 
+  async function copyCmd() {
+    await navigator.clipboard.writeText(PAIR_CMD);
+    setCopied(true);
+  }
+
   return (
     <AppShell
       eyebrow="Agentic Wallet"
@@ -69,8 +77,8 @@ function WalletConnect() {
             <Wallet />
           </div>
           <p>
-            BELL does not replace Binance buy or Markets. Your wallet still owns swaps and sends —
-            we use it only after a session-honest wrap gate.
+            Binance Markets already buys and sends. BELL only uses your Agentic Wallet{" "}
+            <em>after</em> a session-honest gift wrap — never invents a tx hash.
           </p>
           <div className="wallet-status-row">
             <ModeBadge mode={connected ? "broadcast" : "unavailable"} />
@@ -93,16 +101,31 @@ function WalletConnect() {
         </section>
 
         <aside className="panel">
-          <span className="kicker">How to pair</span>
+          <span className="kicker">Pair in 60 seconds</span>
           <h2>From your machine</h2>
+          <div className="wallet-cmd">
+            <Terminal />
+            <code>{PAIR_CMD}</code>
+            <Button type="button" size="icon" variant="ghost" aria-label="Copy command" onClick={() => void copyCmd()}>
+              {copied ? <Check /> : <Copy />}
+            </Button>
+          </div>
           <ol className="wallet-steps">
-            {howTo.map((step) => (
+            <li>Install Binance app (Agentic Wallet / Web3) for your region.</li>
+            <li>
+              Run <code>{PAIR_CMD}</code> — it installs <code>baw</code> if needed.
+            </li>
+            <li>Open the printed URL or enter the pairing code in the app.</li>
+            <li>
+              Codes expire fast. If it says “wrong”, re-run for a <strong>fresh</strong> code.
+            </li>
+            <li>Confirm until status is CONNECTED, then hit Refresh here.</li>
+            {(howTo.length > 5 ? howTo.slice(5) : []).map((step) => (
               <li key={step}>{step}</li>
             ))}
           </ol>
           <p className="body-muted">
-            Pairing codes expire quickly. If the app says “wrong,” run{" "}
-            <code>bash scripts/baw-connect.sh</code> again for a fresh code.
+            Full notes: <code>docs/memory/SETUP_JEV_AND_WALLET.md</code>
           </p>
         </aside>
       </div>

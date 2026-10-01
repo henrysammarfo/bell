@@ -14,8 +14,10 @@
 | `TAVILY_API_KEY` / `TINYFISH_API_KEY` | Research | Operator-supplied locally |
 | `BINANCE_WEB3_API_KEY` | Signed Trading/Transaction | **Set on Bell Vercel** (rotate — pasted in chat) |
 | `BINANCE_WEB3_API_SECRET` | Request signing | **Set on Bell Vercel** (rotate — pasted in chat) |
-| `OPENROUTER_API_KEY` / `BELL_JEV_API_KEY` | TypeSafe **Jev** Decisions API (gift second opinion) | **Needed** — not set yet |
-| `BELL_JEV_MODEL` | Default `typesafe/jev-1.13` | Optional |
+| `TYPESAFE_API_KEY` | **Free Jev path** (console ~$5 credit) | **Needed** — not on Vercel yet |
+| `BELL_JEV_GATEWAY_MODEL` | Vercel AI Gateway `typesafe-ai/jev` | Optional fallback |
+| `OPENROUTER_API_KEY` | OpenRouter Jev (paid credits) | Optional last resort |
+| `BELL_JEV_MODEL` | OpenRouter model id | Optional |
 | `VENICE_API_KEY` | Optional LLM failover | Optional |
 | Legacy `SUPABASE_*` | Unused when Neon Auth live | Optional |
 
