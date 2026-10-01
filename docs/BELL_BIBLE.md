@@ -32,7 +32,9 @@ EU/APAC non-restricted users buying Ondo/bStocks on BSC via Binance Wallet. Accr
 
 ## Pitch order
 
-1. Gift box ritual (you pay · they unwrap) · 2. Weekend fake price pain at wrap · 3. RWA status APIs · 4. Quote/sim · 5. Claim link · 6. Agentic Wallet · 7. Honest DX  
+1. Gift box ritual (you pay · they unwrap) · 2. Weekend fake price pain at wrap · 3. RWA status APIs · 4. Quote/sim · 5. Claim link · 6. Agentic Wallet · 7. Honest DX · 8. **Jev** (TypeSafe) typed second opinion on wrap honesty  
+
+**JEV ≠ JEF:** Jev is TypeSafe’s System One decision model (`typesafe/jev-1.13` / OpenRouter Decisions API) — not Jefferies, not an LLM. Hard gate still owns DENY.
 
 Never lead FOLIO share-counts, PnL bots, or “another buy UI.”
 

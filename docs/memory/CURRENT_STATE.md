@@ -18,6 +18,7 @@
 | Neon Postgres + Managed Better Auth | **Live** on project `bell` |
 | httpOnly multi-tenant sessions | `BELL_SESSION_SECRET` on Bell Vercel |
 | AI trade briefs | AgentRouter+Tor · Vercel AI Gateway prod |
+| **Jev** (TypeSafe) gift judgment | Adapter + gift preview/wrap · needs `OPENROUTER_API_KEY` |
 | Binance Trading / Transaction | Keys on Vercel · quote + simulate · Cursor often `451` |
 | Agentic Wallet (`/wallet` + `baw`) | Status UI + bridge · needs live pair for broadcast |
 | Session watcher / DX evidence | Live |
@@ -26,9 +27,9 @@
 
 Receipt / claim never invents `0x…` hashes. Mode badges required. Residual risk in `THREAT_MODEL.md`.
 
-## JEF note
+## JEV note (correction)
 
-Jefferies JEFx exists elsewhere; beachhead stays Ondo / bStock on BSC 56. Demo AAPL/NVDA unless JEF is live on BSC RWA list.
+Earlier “JEF/Jefferies” was wrong. **JEV = TypeSafe Jev** decision model. Hard gate DENY still wins; Jev scores wrap honesty / timing / freshness for the gift UX.
 
 ## Blocked on Henry
 

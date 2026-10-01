@@ -1,9 +1,15 @@
 # BELL — SESSION LOG
 
+## 2026-10-01 — JEV correction (not JEF)
+
+- User clarified **JEV** = TypeSafe **Jev** System One decision model — not Jefferies JEFx.
+- Wired `src/lib/adapters/jev.ts` → OpenRouter `POST /api/alpha/decisions` (`typesafe/jev-1.13`).
+- Gift preview/wrap now attach Jev honesty/timing/freshness judgment (fail soft if no OpenRouter key).
+- Docs corrected in PIVOT/CURRENT_STATE/about.
+
 ## 2026-10-01 — Gift Box pivot ship
 
 - Locked win wedge: tokenized stock **gift box** (payer wraps · claim link · unwrap) — not another Binance buy.
-- Researched JEF/Jefferies JEFx — beachhead stays Ondo/bStock on BSC; demos AAPL/NVDA.
 - Shipped `gift_boxes` Neon migration (applied), `gift.functions`, `/gift`, `/gift/claim/$code`, `/wallet`.
 - Fun ritual UX (box + ribbon + steps) with full session gate + quote/sim + optional Agentic fund.
 - Updated bible soft pitch, about, landing, WIN_CHECKLIST, PIVOT_GIFTBOX.md.

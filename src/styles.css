@@ -57,6 +57,7 @@
 .gift-gate-msg{margin-top:16px;padding:12px;border-radius:6px;font-size:12px;line-height:1.5}
 .gift-gate-msg.ok{background:oklch(from var(--safe) l c h / .1);color:var(--foreground);border-left:2px solid var(--safe)}
 .gift-gate-msg.bad{background:oklch(from var(--signal) l c h / .1);color:var(--foreground);border-left:2px solid var(--signal)}
+.gift-jev-line{margin-top:10px;padding:10px 12px;border-radius:6px;font:500 11px var(--font-mono);color:var(--muted-foreground);border:1px dashed oklch(from var(--warning) l c h / .45);background:oklch(from var(--warning) l c h / .06)}
 .gift-link-card{margin-top:22px;padding:16px;border:1px solid var(--border);border-radius:8px;background:oklch(.1 .01 210 / .7)}
 .gift-link-card code{display:block;word-break:break-all;font-size:12px;margin:10px 0;color:var(--safe)}
 .gift-link-pop{animation:gift-pop .45s cubic-bezier(.22,1,.36,1) both}

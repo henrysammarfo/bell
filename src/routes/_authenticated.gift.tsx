@@ -36,6 +36,7 @@ function GiftCompose() {
   const [busy, setBusy] = useState(false);
   const [gateMsg, setGateMsg] = useState<string | null>(null);
   const [gateOk, setGateOk] = useState<boolean | null>(null);
+  const [jevLine, setJevLine] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [result, setResult] = useState<{
     claimUrl: string;
@@ -70,13 +71,31 @@ function GiftCompose() {
     });
   }, [list, result]);
 
+  function formatJev(jev: unknown): string | null {
+    if (!jev || typeof jev !== "object") return null;
+    const j = jev as Record<string, unknown>;
+    if (j.mode === "unavailable") return `Jev unavailable · ${String(j.detail ?? "")}`;
+    const honest =
+      typeof j.wrapHonest === "number" ? `honest ${(j.wrapHonest * 100).toFixed(0)}%` : "honest n/a";
+    const timing = typeof j.timing === "string" ? j.timing.replaceAll("_", " ") : "timing n/a";
+    const fresh =
+      typeof j.freshnessLabel === "string"
+        ? j.freshnessLabel
+        : typeof j.freshnessRisk === "number"
+          ? `risk ${j.freshnessRisk.toFixed(2)}`
+          : "risk n/a";
+    return `Jev · ${honest} · ${timing} · ${fresh}`;
+  }
+
   async function checkGate() {
     setBusy(true);
     setGateMsg(null);
+    setJevLine(null);
     try {
       const g = await preview({
         data: { ticker, gapMode, gapAcknowledged: gapAck },
       });
+      setJevLine(formatJev((g as { jev?: unknown }).jev));
       if (!g.ok) {
         setGateOk(false);
         setGateMsg(`${g.reason}: ${g.detail}`);
@@ -114,6 +133,7 @@ function GiftCompose() {
           fundWithWallet: fund,
         },
       });
+      setJevLine(formatJev((res as { jev?: unknown }).jev));
       if (!res.ok) {
         setGateOk(false);
         setGateMsg(`${res.reason}: ${res.detail}`);
@@ -252,6 +272,11 @@ function GiftCompose() {
           {gateMsg && (
             <p className={`gift-gate-msg ${gateOk ? "ok" : "bad"}`} role="status">
               {gateMsg}
+            </p>
+          )}
+          {jevLine && (
+            <p className="gift-jev-line" role="status">
+              {jevLine}
             </p>
           )}
 

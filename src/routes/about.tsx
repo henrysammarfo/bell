@@ -84,8 +84,8 @@ function About() {
       <p className="legal-note">
         BELL is not investment advice. Tokenized securities may be unavailable in your jurisdiction,
         including the US, Canada, UK, Japan, and the Netherlands. Mainnet actions must always be
-        clearly labeled and independently verified. JEFx / Jefferies notes are not the beachhead
-        unless listed live on BSC RWA.
+        clearly labeled and independently verified. Jev (TypeSafe) is a typed decision model used as
+        a second opinion on wrap honesty — not an LLM and not investment advice.
       </p>
     </AppShell>
   );

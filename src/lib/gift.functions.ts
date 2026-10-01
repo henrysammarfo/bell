@@ -10,7 +10,26 @@ import { getNeonSql } from "@/integrations/neon/db";
 import { evaluateSessionGate } from "@/lib/adapters/session-gate";
 import { quoteAndSimulate } from "@/lib/adapters/binance-trading";
 import { agenticMarketSwap, getAgenticWalletStatus } from "@/lib/adapters/agentic-wallet";
+import { judgeGiftWrapWithJev, type JevGiftJudgment } from "@/lib/adapters/jev";
 import { publicClaimUrl } from "@/lib/gift-code";
+
+async function jevForGate(input: {
+  ticker: string;
+  symbol: string | null;
+  sessionLabel: string;
+  gapLabel: string;
+  gateDecision: "ALLOW" | "DENY" | "PENDING";
+  gapMode: boolean;
+  gapAcknowledged: boolean;
+  reasons: string[];
+  amountUsdt?: string;
+}): Promise<JevGiftJudgment | { mode: "unavailable"; detail: string }> {
+  const j = await judgeGiftWrapWithJev(input);
+  if (!j.ok) {
+    return { mode: "unavailable" as const, detail: `${j.reason}: ${j.detail}` };
+  }
+  return j.data;
+}
 
 const WrapInput = z.object({
   ticker: z.string().trim().toUpperCase().min(1).max(16),
@@ -65,8 +84,19 @@ export const previewGiftGate = createServerFn({ method: "POST" })
         reason: gate.reason,
         detail: gate.detail,
         mode: "unavailable" as const,
+        jev: { mode: "unavailable" as const, detail: "Gate unavailable — Jev skipped" },
       };
     }
+    const jev = await jevForGate({
+      ticker: data.ticker,
+      symbol: gate.data.symbol,
+      sessionLabel: gate.data.sessionLabel,
+      gapLabel: gate.data.gapLabel,
+      gateDecision: gate.data.decision,
+      gapMode: data.gapMode,
+      gapAcknowledged: data.gapAcknowledged,
+      reasons: gate.data.reasons,
+    });
     return {
       ok: true as const,
       mode: gate.data.mode,
@@ -77,6 +107,7 @@ export const previewGiftGate = createServerFn({ method: "POST" })
       symbol: gate.data.symbol,
       contractAddress: gate.data.contractAddress,
       dynamic: gate.data.dynamic,
+      jev,
     };
   });
 
@@ -96,8 +127,22 @@ export const wrapGiftBox = createServerFn({ method: "POST" })
         reason: gate.reason,
         detail: gate.detail,
         mode: "unavailable" as const,
+        jev: { mode: "unavailable" as const, detail: "Gate unavailable — Jev skipped" },
       };
     }
+
+    const jev = await jevForGate({
+      ticker: data.ticker,
+      symbol: gate.data.symbol,
+      sessionLabel: gate.data.sessionLabel,
+      gapLabel: gate.data.gapLabel,
+      gateDecision: gate.data.decision,
+      gapMode: data.gapMode,
+      gapAcknowledged: data.gapAcknowledged,
+      reasons: gate.data.reasons,
+      amountUsdt: data.amountUsdt,
+    });
+
     if (gate.data.decision === "DENY") {
       return {
         ok: false as const,
@@ -106,6 +151,7 @@ export const wrapGiftBox = createServerFn({ method: "POST" })
         mode: "unavailable" as const,
         sessionLabel: gate.data.sessionLabel,
         gapLabel: gate.data.gapLabel,
+        jev,
       };
     }
 
@@ -175,6 +221,7 @@ export const wrapGiftBox = createServerFn({ method: "POST" })
           priceImpact: sim.data.priceImpact,
           networkFee: sim.data.networkFee,
           mode: sim.data.mode,
+          jev,
         })}::jsonb,
         ${wrapDetail},
         ${wrapTxHash}
@@ -219,6 +266,7 @@ export const wrapGiftBox = createServerFn({ method: "POST" })
       sessionLabel: gate.data.sessionLabel,
       gapLabel: gate.data.gapLabel,
       symbol: gate.data.symbol ?? data.ticker,
+      jev,
     };
   });
 

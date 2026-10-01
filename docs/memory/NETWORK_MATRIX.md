@@ -11,5 +11,6 @@
 | Broadcast / swap | Agentic Wallet / signed | `broadcast` | `unavailable` |
 | Agent Studio watcher | BNB Agent Studio / cron | labeled runtime | `unavailable` |
 | LLM briefs | AgentRouter (+ Tor/relay) | live model | `unavailable` (no mock) |
+| Jev gift judgment | OpenRouter Decisions `typesafe/jev-1.13` | live typed answers | `unavailable` if no key |
 
 BSC chainId = **56**. Spot only. No perps.

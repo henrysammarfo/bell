@@ -25,6 +25,14 @@
 | `smoke_rwa_ok` · Ondo BSC count ~458 · gate DENY in premarket/closed | Verified | `bun run smoke:rwa` |
 | Live sample can show `marketStatus: overnight` or `premarket` with openState true | Verified | Gate uses cash session + status + gap — not openState alone |
 
+## 2026-10-01 — JEV (TypeSafe Jev), not JEF
+
+| Claim | Status | Source |
+|---|---|---|
+| Jev is a System One decision model (typed noul/choice/score), not an LLM | Verified | https://openrouter.ai/docs/guides/community/jev |
+| Decisions API: `POST https://openrouter.ai/api/alpha/decisions` model `typesafe/jev-1.13` | Verified | https://openrouter.ai/docs/guides/community/jev-tutorial |
+| Jefferies JEFx was a mistaken reading of “JEV” | Corrected | Operator clarification 2026-10-01 |
+
 ## 2026-09-29 — Tooling
 
 | Claim | Status |

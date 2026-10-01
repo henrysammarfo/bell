@@ -18,9 +18,11 @@
 Inspiration (RH Chain peers like Givest / Wrapstocks / tagstock): gift metaphor.  
 **Our wedge on BSC:** Binance RWA session gate + Agentic Wallet + claim link — not a Folio/RH clone.
 
-## JEF / Jeff note
+## JEV / Jev note (not JEF)
 
-Jefferies **JEFx** exists as xStock elsewhere; BELL beachhead stays **Ondo / bStock on BSC 56**. Use AAPL/NVDA demos; only surface JEF if live on BSC RWA list.
+**Jev** = TypeSafe System One decision model (`typesafe/jev-1.13` via OpenRouter Decisions API) — typed noul/choice/score, **not** an LLM and **not** Jefferies JEFx.
+
+BELL uses Jev as a **second opinion** on gift wrap honesty (timing + freshness risk). Hard RWA session gate still owns ALLOW/DENY. Needs `OPENROUTER_API_KEY` (or `BELL_JEV_API_KEY`).
 
 ## User story (8s)
 

@@ -8,6 +8,7 @@ Submit target: **2026-10-11 12:00 UTC**
 - [x] Soft pitch: wrap / claim link / session honesty
 - [x] `/gift` compose + `/gift/claim/$code` unwrap
 - [x] Neon `gift_boxes` applied
+- [x] **Jev** (TypeSafe) adapter on gift preview/wrap — needs OpenRouter key for live
 
 ## Infra / spine
 
