@@ -18,10 +18,13 @@ import { Route as MarketsRouteImport } from './routes/markets'
 import { Route as AuthenticatedActivityRouteImport } from './routes/_authenticated.activity'
 import { Route as AuthenticatedBriefRouteImport } from './routes/_authenticated.brief'
 import { Route as AuthenticatedDxReportRouteImport } from './routes/_authenticated.dx-report'
+import { Route as AuthenticatedGiftRouteImport } from './routes/_authenticated.gift'
 import { Route as AuthenticatedReceiptRouteImport } from './routes/_authenticated.receipt'
 import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated.review'
 import { Route as AuthenticatedSimulateRouteImport } from './routes/_authenticated.simulate'
+import { Route as AuthenticatedWalletRouteImport } from './routes/_authenticated.wallet'
 import { Route as AuthenticatedWatchersRouteImport } from './routes/_authenticated.watchers'
+import { Route as GiftClaimCodeRouteImport } from './routes/gift.claim.$code'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -67,6 +70,11 @@ const AuthenticatedDxReportRoute = AuthenticatedDxReportRouteImport.update({
   path: '/dx-report',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedGiftRoute = AuthenticatedGiftRouteImport.update({
+  id: '/gift',
+  path: '/gift',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedReceiptRoute = AuthenticatedReceiptRouteImport.update({
   id: '/receipt',
   path: '/receipt',
@@ -82,10 +90,20 @@ const AuthenticatedSimulateRoute = AuthenticatedSimulateRouteImport.update({
   path: '/simulate',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedWalletRoute = AuthenticatedWalletRouteImport.update({
+  id: '/wallet',
+  path: '/wallet',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedWatchersRoute = AuthenticatedWatchersRouteImport.update({
   id: '/watchers',
   path: '/watchers',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const GiftClaimCodeRoute = GiftClaimCodeRouteImport.update({
+  id: '/gift/claim/$code',
+  path: '/gift/claim/$code',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -97,10 +115,13 @@ export interface FileRoutesByFullPath {
   '/activity': typeof AuthenticatedActivityRoute
   '/brief': typeof AuthenticatedBriefRoute
   '/dx-report': typeof AuthenticatedDxReportRoute
+  '/gift': typeof AuthenticatedGiftRoute
   '/receipt': typeof AuthenticatedReceiptRoute
   '/review': typeof AuthenticatedReviewRoute
   '/simulate': typeof AuthenticatedSimulateRoute
+  '/wallet': typeof AuthenticatedWalletRoute
   '/watchers': typeof AuthenticatedWatchersRoute
+  '/gift/claim/$code': typeof GiftClaimCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -111,10 +132,13 @@ export interface FileRoutesByTo {
   '/activity': typeof AuthenticatedActivityRoute
   '/brief': typeof AuthenticatedBriefRoute
   '/dx-report': typeof AuthenticatedDxReportRoute
+  '/gift': typeof AuthenticatedGiftRoute
   '/receipt': typeof AuthenticatedReceiptRoute
   '/review': typeof AuthenticatedReviewRoute
   '/simulate': typeof AuthenticatedSimulateRoute
+  '/wallet': typeof AuthenticatedWalletRoute
   '/watchers': typeof AuthenticatedWatchersRoute
+  '/gift/claim/$code': typeof GiftClaimCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -127,10 +151,13 @@ export interface FileRoutesById {
   '/_authenticated/activity': typeof AuthenticatedActivityRoute
   '/_authenticated/brief': typeof AuthenticatedBriefRoute
   '/_authenticated/dx-report': typeof AuthenticatedDxReportRoute
+  '/_authenticated/gift': typeof AuthenticatedGiftRoute
   '/_authenticated/receipt': typeof AuthenticatedReceiptRoute
   '/_authenticated/review': typeof AuthenticatedReviewRoute
   '/_authenticated/simulate': typeof AuthenticatedSimulateRoute
+  '/_authenticated/wallet': typeof AuthenticatedWalletRoute
   '/_authenticated/watchers': typeof AuthenticatedWatchersRoute
+  '/gift/claim/$code': typeof GiftClaimCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -143,10 +170,13 @@ export interface FileRouteTypes {
     | '/activity'
     | '/brief'
     | '/dx-report'
+    | '/gift'
     | '/receipt'
     | '/review'
     | '/simulate'
+    | '/wallet'
     | '/watchers'
+    | '/gift/claim/$code'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -157,10 +187,13 @@ export interface FileRouteTypes {
     | '/activity'
     | '/brief'
     | '/dx-report'
+    | '/gift'
     | '/receipt'
     | '/review'
     | '/simulate'
+    | '/wallet'
     | '/watchers'
+    | '/gift/claim/$code'
   id:
     | '__root__'
     | '/'
@@ -172,10 +205,13 @@ export interface FileRouteTypes {
     | '/_authenticated/activity'
     | '/_authenticated/brief'
     | '/_authenticated/dx-report'
+    | '/_authenticated/gift'
     | '/_authenticated/receipt'
     | '/_authenticated/review'
     | '/_authenticated/simulate'
+    | '/_authenticated/wallet'
     | '/_authenticated/watchers'
+    | '/gift/claim/$code'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -185,6 +221,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DeskRoute: typeof DeskRoute
   MarketsRoute: typeof MarketsRoute
+  GiftClaimCodeRoute: typeof GiftClaimCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDxReportRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/gift': {
+      id: '/_authenticated/gift'
+      path: '/gift'
+      fullPath: '/gift'
+      preLoaderRoute: typeof AuthenticatedGiftRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/receipt': {
       id: '/_authenticated/receipt'
       path: '/receipt'
@@ -273,12 +317,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSimulateRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/wallet': {
+      id: '/_authenticated/wallet'
+      path: '/wallet'
+      fullPath: '/wallet'
+      preLoaderRoute: typeof AuthenticatedWalletRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/watchers': {
       id: '/_authenticated/watchers'
       path: '/watchers'
       fullPath: '/watchers'
       preLoaderRoute: typeof AuthenticatedWatchersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/gift/claim/$code': {
+      id: '/gift/claim/$code'
+      path: '/gift/claim/$code'
+      fullPath: '/gift/claim/$code'
+      preLoaderRoute: typeof GiftClaimCodeRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -287,9 +345,11 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedActivityRoute: typeof AuthenticatedActivityRoute
   AuthenticatedBriefRoute: typeof AuthenticatedBriefRoute
   AuthenticatedDxReportRoute: typeof AuthenticatedDxReportRoute
+  AuthenticatedGiftRoute: typeof AuthenticatedGiftRoute
   AuthenticatedReceiptRoute: typeof AuthenticatedReceiptRoute
   AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
   AuthenticatedSimulateRoute: typeof AuthenticatedSimulateRoute
+  AuthenticatedWalletRoute: typeof AuthenticatedWalletRoute
   AuthenticatedWatchersRoute: typeof AuthenticatedWatchersRoute
 }
 
@@ -297,9 +357,11 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedActivityRoute: AuthenticatedActivityRoute,
   AuthenticatedBriefRoute: AuthenticatedBriefRoute,
   AuthenticatedDxReportRoute: AuthenticatedDxReportRoute,
+  AuthenticatedGiftRoute: AuthenticatedGiftRoute,
   AuthenticatedReceiptRoute: AuthenticatedReceiptRoute,
   AuthenticatedReviewRoute: AuthenticatedReviewRoute,
   AuthenticatedSimulateRoute: AuthenticatedSimulateRoute,
+  AuthenticatedWalletRoute: AuthenticatedWalletRoute,
   AuthenticatedWatchersRoute: AuthenticatedWatchersRoute,
 }
 
@@ -313,6 +375,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DeskRoute: DeskRoute,
   MarketsRoute: MarketsRoute,
+  GiftClaimCodeRoute: GiftClaimCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,0 +1,17 @@
+---
+description: BELL doctrine — closed-session honesty on BSC, fail-closed, no unhackable claims
+alwaysApply: true
+---
+
+# BELL doctrine
+
+- Product job: **closed-session honesty for BSC tokenized stocks** — fail closed when the underlying cash session is not honest, unless weekend-gap is explicitly on.
+- Soft pitch only in user-facing copy. Never lead FOLIO share-counts, PnL bots, or "another buy UI."
+- Accra = build base, not beachhead ICP (EU/APAC non-restricted).
+- Architecture docs + `docs/memory/*` + `docs/BELL_BIBLE.md` are binding. Update `CURRENT_STATE.md`, `SESSION_LOG.md`, `FACT_CHECK.md` on material changes.
+- Never claim unhackable / nation-state-proof. Document residual risk in `docs/memory/THREAT_MODEL.md`.
+- No mocks, no silent fallbacks, no fake fills. Missing dependency → fail-closed + labeled mode.
+- Multi-tenant: httpOnly server sessions — no auth secrets in localStorage for production.
+- Network: **BSC mainnet** · Transaction API dry-run first · small live $.
+- Assets: **bStocks / Ondo** central (xStocks only if live on BSC).
+- Secrets only in gitignored `.env` — never commit or re-echo keys from chat.

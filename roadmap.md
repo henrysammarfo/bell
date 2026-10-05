@@ -5,6 +5,11 @@
 - [x] Markets, watchers, activity, DX report, and about routes
 - [x] Responsive and interaction verification
 - [x] Enable trader accounts and private data storage
-- [ ] Add AI trade brief generation and history
-- [ ] Persist watchlists, simulations, activity, and DX reports
-- [ ] Verify authenticated flows, AI, and responsive layouts
+- [x] Doctrine: Cursor rules/skills + docs/memory + BELL_BIBLE
+- [x] Live RWA fail-closed gate (server) on desk/markets/simulate
+- [x] httpOnly multi-tenant session scaffold + no localStorage auth (prod)
+- [x] AgentRouter client (Tor/relay) + trade briefs fail-closed
+- [x] DX live evidence collector + session watcher run
+- [ ] Binance Web3 signed Transaction simulate + Agentic Wallet mainnet proof (needs API key)
+- [ ] Agent Studio cloud deploy for persistent watcher
+- [ ] Submit video + forms before 2026-10-11 12:00 UTC

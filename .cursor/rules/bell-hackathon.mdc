@@ -1,0 +1,15 @@
+---
+description: BNB Tokenized Stocks hackathon submit discipline
+alwaysApply: true
+---
+
+# BNB Hack — Tokenized Stocks
+
+- Submit lock: **2026-10-11 12:00 UTC** · judging 12–23 Oct · winners week of 26 Oct.
+- Scoring: Technical 30% · Creativity 25% · DX Report 25% · UX 20%.
+- Chase specials: Agentic Wallet / Skills **$2k** · Agent Studio **$2k** (no separate entry).
+- Mandatory spine: RWA status → fail-closed gate → Transaction simulate → Trading → Agentic Wallet → DX report → public repo → deployed demo → BSC mainnet tx.
+- Spot only · BSC mainnet only · at least one of bStocks / Ondo / xStocks central.
+- DX report must be human, specific, signed-auth + status codes — no AI fluff.
+- Eligibility: not US/CA/UK/JP/NL (+ Iran, Cuba, NK, Crimea, Donetsk, Luhansk). Accra OK if laws allow.
+- Re-verify facts with Tavily/TinyFish before README claims.
