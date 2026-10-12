@@ -1,48 +1,33 @@
 # BELL — CURRENT STATE
 
-> Updated: 2026-10-11 · Submit day · tests 22/22 · build green · SUBMISSION.md  
-> Bible: `docs/BELL_BIBLE.md` · Pivot: `PIVOT_GIFTBOX.md` · Comp: `COMP_GIFT_UX.md` · Threat: `THREAT_MODEL.md`  
-> Soft pitch: Wrap a tokenized stock as a gift. They unwrap the link — BELL won’t wrap it at a fake weekend price unless you say so.
+> Updated: 2026-10-12 · Submit ship on `main` `278a3ee` · repo **PUBLIC**  
+> Demo: https://bell-eta-five.vercel.app · Repo: https://github.com/henrysammarfo/bell  
+> Pack: `docs/memory/SUBMISSION.md`
 
 ## Soft pitch (lock)
 
-**Session-honest gift boxes for BSC tokenized stocks — bStocks first, then Ondo.** Payer wraps · receiver claims. Fail closed on stale weekend prints unless weekend-gap is explicit. Not another Binance buy UI.
+**Session-honest gift boxes for BSC tokenized stocks — bStocks first, then Ondo.** Payer wraps · receiver claims. Fail closed on stale weekend prints unless weekend-gap is explicit.
 
-## What exists in repo
+## Verified live (submit pass)
 
-| Area | Status |
+| Check | Result |
 |---|---|
-| Gift Box UX (`/gift`, `/gift/claim/$code`) | **Shipped** — wrap ritual + unwrap claim |
-| Gift Neon schema `gift_boxes` | **Applied** on Bell Neon |
-| Live RWA adapters + TTL cache | **Live** — list 10m · status 45s · dynamic 20s · asset 60s |
-| Markets order | **bStocks → Ondo → xStocks** (live type 3/1/2) |
-| Landing / auth / shell | **Binance black · #F0B90B · white** · Outfit + IBM Plex Mono |
-| Neon Postgres + Managed Better Auth | **Live** on project `bell` |
-| httpOnly multi-tenant sessions | `BELL_SESSION_SECRET` on Bell Vercel |
-| AI trade briefs | AgentRouter+Tor · Vercel AI Gateway prod |
-| **Jev** (TypeSafe) gift judgment | Free-first: `TYPESAFE_API_KEY` → AI Gateway → OpenRouter |
-| Setup runbook | `docs/memory/SETUP_JEV_AND_WALLET.md` |
-| Binance Trading / Transaction | Keys on Vercel · quote + simulate · Cursor often `451` |
-| Agentic Wallet (`/wallet` + `baw`) | Status UI + bridge · needs live pair for broadcast |
-| Session watcher / DX evidence | Live |
+| `bun run test` | **22/22** |
+| `bun run build` | **green** |
+| Prod routes `/` `/about` `/markets` `/desk` `/gift` `/gift/claim/*` `/wallet` `/dx-report` | **200** (auth 307) |
+| Prod brand (Outfit / Binance yellow) | **Live** on bell-eta-five |
+| RWA market status | **closed** weekend (`MARKET_CLOSED`) — DENY demo ready |
+| bStocks `type=3` BSC | **Live** |
+| GitHub visibility | **PUBLIC** |
+| Secrets in git | Clean |
 
-## Honesty
+## Operator left (forms / video)
 
-Receipt / claim never invents `0x…` hashes. Mode badges required. Residual risk in `THREAT_MODEL.md`.
+1. Project form: https://forms.gle/yToDUzaDMwWnq6R6A  
+2. DX form: https://forms.gle/EUQ39xf54GHjC2ys5  
+3. ≤4 min demo video (weekend DENY is live)  
+4. Optional: pair Agentic Wallet + small mainnet claim; `TYPESAFE_API_KEY` for Jev line  
 
-## JEV note (correction)
+## Residual
 
-Earlier “JEF/Jefferies” was wrong. **JEV = TypeSafe Jev** decision model. Hard gate DENY still wins; Jev scores wrap honesty / timing / freshness for the gift UX.
-
-## Keys Henry still owes (names only)
-
-1. **`TYPESAFE_API_KEY`** — free Jev path (~$5 console credit) — not on Vercel yet  
-2. Pair Agentic Wallet (`bash scripts/baw-connect.sh`) for live claim broadcast  
-3. **Rotate** Binance Web3 keys (pasted in chat earlier)  
-4. Optional: Neon Auth custom SMTP  
-
-Already live / free public: Binance RWA list/status/dynamic (no key). Signed quote/sim needs `BINANCE_WEB3_*` (set). Research: `TAVILY_API_KEY` / `TINYFISH_API_KEY` local.
-
-## Prod URL note
-
-Vercel project `bell` production alias observed as **`https://bell-eta-five.vercel.app`**. `bell.vercel.app` may be a different/older surface — re-check before demo day.
+Quote/simulate Cursor egress often `451`. Claim never invents hashes. See `THREAT_MODEL.md`.

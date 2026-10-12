@@ -1,5 +1,12 @@
 # BELL — SESSION LOG
 
+## 2026-10-12 — Submit ship A–Z
+
+- Tests 22/22 · build green · prod routes 200 · weekend MARKET_CLOSED live.
+- Pushed `278a3ee` to `main` (bStocks-first + TTL cache + Binance brand + judge README + SUBMISSION pack).
+- Repo flipped **public**; homepage → https://bell-eta-five.vercel.app
+- Prod HTML confirms new brand. Forms + demo video still operator-owned.
+
 ## 2026-10-06 — bStocks central + brand + efficient RWA
 
 - Live fact-check: RWA `type=3` = **bStocks** (~87 BSC) incl. NVDAB/TSLAB; `type=1` Ondo; `type=2` xStocks. Skills-hub “type=1 only” is stale.
