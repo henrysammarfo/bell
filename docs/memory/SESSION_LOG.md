@@ -1,5 +1,18 @@
 # BELL — SESSION LOG
 
+## 2026-10-06 — bStocks central + brand + efficient RWA
+
+- Live fact-check: RWA `type=3` = **bStocks** (~87 BSC) incl. NVDAB/TSLAB; `type=1` Ondo; `type=2` xStocks. Skills-hub “type=1 only” is stale.
+- Competitor pull: Givest (RH gift links) + Wrapstocks/tagstock — wrote `COMP_GIFT_UX.md`. Base B20 ≠ gift winner.
+- Added `rwa-cache.ts` TTLs (list 10m / status 45s / dynamic 20s / asset 60s) so markets stay fresh without burning egress.
+- Markets merge order flipped to **bStocks first**; ticker lookup prefers type 3.
+- Landing rebuilt: no photo/demo card; Binance black/#F0B90B atmosphere; Outfit font; auth layout CSS fixed.
+- Keys needed list refreshed in CURRENT_STATE / KEYS_STATUS.
+
+## 2026-10-05 — Merged to main
+
+- PR #1 merge-commit `256aba2` — gift box + Jev + Neon + RWA spine on `main`.
+
 ## 2026-10-01 — Free Jev path + wallet setup docs
 
 - Vercel MCP: Bell has AI Gateway model + AgentRouter/Binance/Neon — **no** `TYPESAFE_API_KEY` / OpenRouter yet.

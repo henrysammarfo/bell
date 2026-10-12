@@ -15,8 +15,8 @@
 | 24/7 trading UI | **Session-honest wrap** — fail-closed on stale gap |
 | Generic transfer | **Ritual unwrap** — note, ticker, session badge, receipt |
 
-Inspiration (RH Chain peers like Givest / Wrapstocks / tagstock): gift metaphor.  
-**Our wedge on BSC:** Binance RWA session gate + Agentic Wallet + claim link — not a Folio/RH clone.
+Inspiration (RH Chain peers like Givest / Wrapstocks / tagstock): gift metaphor — see `COMP_GIFT_UX.md`.  
+**Our wedge on BSC:** **bStocks central** (+ Ondo) · Binance RWA session gate · Agentic Wallet · claim link — not a Folio/RH clone.
 
 ## JEV / Jev note (not JEF)
 

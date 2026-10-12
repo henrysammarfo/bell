@@ -1,4 +1,5 @@
 import { errResult, okResult, type AdapterResult } from "./types";
+import { rwaCached, RWA_TTL } from "./rwa-cache";
 import { BSC_CHAIN_ID, RWA_HEADERS, rwaFetchJson } from "./rwa-endpoints";
 
 /** Correct path from binance-tokenized-securities-info skill (API 5). */
@@ -50,47 +51,49 @@ export async function fetchRwaDynamic(opts: {
   if (!contractAddress) {
     return errResult("bell.rwa-dynamic", "missing_contract", "contractAddress required");
   }
-  try {
-    const qs = new URLSearchParams({ chainId, contractAddress });
-    const { status, body } = await rwaFetchJson<ApiEnvelope>(`${RWA_DYNAMIC_URL}?${qs}`, {
-      headers: RWA_HEADERS,
-    });
-    if (status !== 200 || body.code !== "000000" || !body.data) {
+  return rwaCached(`rwa-dyn:${chainId}:${contractAddress.toLowerCase()}`, RWA_TTL.dynamic, async () => {
+    try {
+      const qs = new URLSearchParams({ chainId, contractAddress });
+      const { status, body } = await rwaFetchJson<ApiEnvelope>(`${RWA_DYNAMIC_URL}?${qs}`, {
+        headers: RWA_HEADERS,
+      });
+      if (status !== 200 || body.code !== "000000" || !body.data) {
+        return errResult(
+          "bell.rwa-dynamic",
+          "rwa_dynamic_bad_response",
+          `HTTP ${status} code=${body.code ?? "n/a"}`,
+        );
+      }
+      const d = body.data;
+      const tokenInfo = (d.tokenInfo ?? {}) as Record<string, unknown>;
+      const stockInfo = (d.stockInfo ?? {}) as Record<string, unknown>;
+      const tokenPrice = num(tokenInfo["price"]);
+      const multiplier = num(tokenInfo["sharesMultiplier"]);
+      const holders = num(tokenInfo["totalHolders"]);
+      let referencePrice = num(stockInfo["price"]);
+      // When cash print is null (closed hours), derive economic reference from
+      // on-chain token price / multiplier — labeled as API-derived, not NYSE.
+      if (referencePrice == null && tokenPrice != null && multiplier && multiplier > 0) {
+        referencePrice = tokenPrice / multiplier;
+      }
+
+      return okResult("mainnet-read", "bell.rwa-dynamic", {
+        chainId,
+        contractAddress,
+        tokenPrice,
+        referencePrice,
+        multiplier,
+        holders,
+        raw: d as Record<string, unknown>,
+      });
+    } catch (e) {
       return errResult(
         "bell.rwa-dynamic",
-        "rwa_dynamic_bad_response",
-        `HTTP ${status} code=${body.code ?? "n/a"}`,
+        "rwa_dynamic_fetch_failed",
+        e instanceof Error ? e.message : String(e),
       );
     }
-    const d = body.data;
-    const tokenInfo = (d.tokenInfo ?? {}) as Record<string, unknown>;
-    const stockInfo = (d.stockInfo ?? {}) as Record<string, unknown>;
-    const tokenPrice = num(tokenInfo["price"]);
-    const multiplier = num(tokenInfo["sharesMultiplier"]);
-    const holders = num(tokenInfo["totalHolders"]);
-    let referencePrice = num(stockInfo["price"]);
-    // When cash print is null (closed hours), derive economic reference from
-    // on-chain token price / multiplier — labeled as API-derived, not NYSE.
-    if (referencePrice == null && tokenPrice != null && multiplier && multiplier > 0) {
-      referencePrice = tokenPrice / multiplier;
-    }
-
-    return okResult("mainnet-read", "bell.rwa-dynamic", {
-      chainId,
-      contractAddress,
-      tokenPrice,
-      referencePrice,
-      multiplier,
-      holders,
-      raw: d as Record<string, unknown>,
-    });
-  } catch (e) {
-    return errResult(
-      "bell.rwa-dynamic",
-      "rwa_dynamic_fetch_failed",
-      e instanceof Error ? e.message : String(e),
-    );
-  }
+  });
 }
 
 /** Gap percent: (token - reference) / reference * 100. Null if either missing. */

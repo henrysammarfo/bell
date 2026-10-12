@@ -85,7 +85,7 @@ function Markets() {
 
   return (
     <AppShell
-      eyebrow="RWA catalogue · BSC 56"
+      eyebrow="bStocks first · Ondo · xStocks · BSC 56"
       title="Markets"
       action={
         <div className="markets-actions">
@@ -157,8 +157,9 @@ function Markets() {
         ))}
       </section>
       <p className="source-note">
-        Reference prices are API fields, not official NYSE or Nasdaq prices. BELL combines provider
-        status with underlying-market checks. Mode: {mode}.
+        Catalogue prefers live Binance <strong>bStocks</strong> (RWA type=3), then Ondo, then
+        xStocks. Reference prices are API fields, not official NYSE or Nasdaq prints. Session gate
+        still owns wrap ALLOW/DENY. Mode: {mode}.
       </p>
     </AppShell>
   );

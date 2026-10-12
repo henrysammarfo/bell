@@ -30,19 +30,26 @@ export const getRwaMarketStatus = createServerFn({ method: "GET" }).handler(asyn
 export const listBscMarkets = createServerFn({ method: "GET" }).handler(async () => {
   const cash = evaluateCashSession();
   const market = await fetchRwaMarketStatus();
-  // Prefer Ondo (1) then merge bStock (3) — fail closed if neither works
-  const ondo = await fetchRwaList({ type: 1 });
-  const bstock = await fetchRwaList({ type: 3 });
-  if (!ondo.ok && !bstock.ok) {
+  // bStocks central (type 3) — then Ondo (1) — then xStocks (2) if live on BSC
+  const [bstock, ondo, xstock] = await Promise.all([
+    fetchRwaList({ type: 3 }),
+    fetchRwaList({ type: 1 }),
+    fetchRwaList({ type: 2 }),
+  ]);
+  if (!bstock.ok && !ondo.ok && !xstock.ok) {
     return {
       ok: false as const,
       mode: "unavailable" as const,
-      reason: ondo.ok ? bstock.reason : ondo.reason,
-      detail: ondo.ok ? bstock.detail : ondo.detail,
+      reason: bstock.reason,
+      detail: bstock.detail,
       markets: [] as const,
     };
   }
-  const items = [...(ondo.ok ? ondo.data.items : []), ...(bstock.ok ? bstock.data.items : [])];
+  const items = [
+    ...(bstock.ok ? bstock.data.items : []),
+    ...(ondo.ok ? ondo.data.items : []),
+    ...(xstock.ok ? xstock.data.items : []),
+  ];
   // Dedupe by contract
   const seen = new Set<string>();
   const unique = items.filter((i) => {
@@ -52,8 +59,13 @@ export const listBscMarkets = createServerFn({ method: "GET" }).handler(async ()
     return true;
   });
 
-  // Enrich a curated slice for UI speed (first 24) with dynamic prices in parallel
-  const slice = unique.slice(0, 24);
+  // Enrich a curated slice — bStocks first so the gift desk surfaces Binance push assets
+  const ordered = [
+    ...unique.filter((i) => i.type === 3),
+    ...unique.filter((i) => i.type === 1),
+    ...unique.filter((i) => i.type !== 3 && i.type !== 1),
+  ];
+  const slice = ordered.slice(0, 24);
   const enriched = await Promise.all(
     slice.map(async (item) => {
       const [dyn, asset] = await Promise.all([
@@ -95,6 +107,11 @@ export const listBscMarkets = createServerFn({ method: "GET" }).handler(async ()
     ok: true as const,
     mode: "mainnet-read" as const,
     totalBsc: unique.length,
+    counts: {
+      bStocks: bstock.ok ? bstock.data.bscCount : 0,
+      ondo: ondo.ok ? ondo.data.bscCount : 0,
+      xStocks: xstock.ok ? xstock.data.bscCount : 0,
+    },
     cashSession: cash.ok ? cash.data : null,
     rwaMarket: market.ok ? market.data : null,
     markets: enriched,

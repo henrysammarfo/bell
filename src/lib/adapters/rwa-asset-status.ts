@@ -1,4 +1,5 @@
 import { errResult, okResult, type AdapterResult } from "./types";
+import { rwaCached, RWA_TTL } from "./rwa-cache";
 import { BSC_CHAIN_ID, RWA_ASSET_STATUS_URL, rwaFetchJson } from "./rwa-endpoints";
 
 export type RwaAssetStatus = {
@@ -30,35 +31,41 @@ export async function fetchRwaAssetStatus(opts: {
   if (!contractAddress) {
     return errResult("bell.rwa-asset-status", "missing_contract", "contractAddress required");
   }
-  try {
-    const qs = new URLSearchParams({
-      chainId,
-      contractAddress,
-    });
-    const { status, body } = await rwaFetchJson<ApiEnvelope>(`${RWA_ASSET_STATUS_URL}?${qs}`);
-    if (status !== 200 || body.code !== "000000" || !body.data) {
-      return errResult(
-        "bell.rwa-asset-status",
-        "rwa_asset_status_bad_response",
-        `HTTP ${status} code=${body.code ?? "n/a"}`,
-      );
-    }
-    const d = body.data;
-    return okResult("mainnet-read", "bell.rwa-asset-status", {
-      chainId,
-      contractAddress,
-      openState: Boolean(d.openState),
-      reasonCode: d.reasonCode ?? null,
-      reasonMsg: d.reasonMsg ?? null,
-      marketStatus: d.marketStatus ?? null,
-    });
-  } catch (e) {
-    return errResult(
-      "bell.rwa-asset-status",
-      "rwa_asset_status_fetch_failed",
-      e instanceof Error ? e.message : String(e),
-    );
-  }
+  return rwaCached(
+    `rwa-asset:${chainId}:${contractAddress.toLowerCase()}`,
+    RWA_TTL.assetStatus,
+    async () => {
+      try {
+        const qs = new URLSearchParams({
+          chainId,
+          contractAddress,
+        });
+        const { status, body } = await rwaFetchJson<ApiEnvelope>(`${RWA_ASSET_STATUS_URL}?${qs}`);
+        if (status !== 200 || body.code !== "000000" || !body.data) {
+          return errResult(
+            "bell.rwa-asset-status",
+            "rwa_asset_status_bad_response",
+            `HTTP ${status} code=${body.code ?? "n/a"}`,
+          );
+        }
+        const d = body.data;
+        return okResult("mainnet-read", "bell.rwa-asset-status", {
+          chainId,
+          contractAddress,
+          openState: Boolean(d.openState),
+          reasonCode: d.reasonCode ?? null,
+          reasonMsg: d.reasonMsg ?? null,
+          marketStatus: d.marketStatus ?? null,
+        });
+      } catch (e) {
+        return errResult(
+          "bell.rwa-asset-status",
+          "rwa_asset_status_fetch_failed",
+          e instanceof Error ? e.message : String(e),
+        );
+      }
+    },
+  );
 }
 
 export function isAssetPausedOrHalted(status: RwaAssetStatus): boolean {

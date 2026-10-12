@@ -21,6 +21,15 @@
 | `VENICE_API_KEY` | Optional LLM failover | Optional |
 | Legacy `SUPABASE_*` | Unused when Neon Auth live | Optional |
 
+### Free / no-key (already used)
+
+| Endpoint family | Cost | Notes |
+|---|---|---|
+| Binance RWA public list/status/dynamic/asset | **Free** | Cached in-process: list 10m · status 45s · dynamic 20s · asset 60s |
+| Cash session evaluator | Local | No network |
+
 Never commit values. Never put private keys in `VITE_*`.
 
 **Ops note:** Cursor/cloud egress often gets Binance `451` geo eligibility on `/api/v1/swap/quote` + `/api/v1/transaction/simulate`. Keys are wired; live signed success needs allowed-region deploy egress (Vercel) or operator VPN.
+
+**bStocks note (2026-10-06):** Live `type=3` on RWA list — prefer these in Markets/gift lookup over Ondo when both match.

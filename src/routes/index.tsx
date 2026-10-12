@@ -1,8 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, Gift, Menu, X } from "lucide-react";
+import { Gift, Menu, X } from "lucide-react";
 import { useState } from "react";
-import bg from "@/assets/bell-cinematic-bg.jpg";
-import demo from "@/assets/bell-demo-visual.jpg";
 import { BellLogo } from "@/components/bell-logo";
 import { Button } from "@/components/ui/button";
 
@@ -13,12 +11,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "BELL wraps tokenized stocks as session-honest gifts on BSC. Fail closed on fake weekend prices.",
+          "Gift bStocks and Ondo tokenized stocks on BSC. Session-honest wrap — fail closed on fake weekend prices.",
       },
       { property: "og:title", content: "BELL — Tokenized stock gift boxes" },
       {
         property: "og:description",
-        content: "You pay. They unwrap a real stock token — only when the session is honest.",
+        content: "You pay. They unwrap a real bStock or Ondo token — only when the session is honest.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -31,15 +29,13 @@ function Home() {
   const [menu, setMenu] = useState(false);
   return (
     <main className="home-viewport">
-      <section className="home-screen">
-        <img
-          className="home-background"
-          src={bg}
-          width={1920}
-          height={1080}
-          alt="Monumental exchange bell at night"
-        />
-        <div className="home-vignette" />
+      <section className="home-screen home-screen-binance">
+        <div className="home-atmosphere" aria-hidden="true">
+          <div className="home-grid" />
+          <div className="home-glow home-glow-a" />
+          <div className="home-glow home-glow-b" />
+          <div className="home-ring" />
+        </div>
         <header className={`home-header ${menu ? "menu-open" : ""}`}>
           <BellLogo />
           <div className="home-actions">
@@ -52,15 +48,15 @@ function Home() {
               <Link to="/about">About</Link>
             </nav>
             <div className="time-panel">
-              <span>Gift ritual</span>
+              <span>bStocks · BSC</span>
               <strong>Wrap · Share · Unwrap</strong>
             </div>
-            <Button asChild variant="light">
+            <Button asChild className="btn-binance">
               <Link to="/gift">Wrap a gift</Link>
             </Button>
           </div>
           <Button
-            variant="glass"
+            variant="outline"
             size="icon-lg"
             className="home-menu"
             aria-label="Toggle navigation"
@@ -69,7 +65,7 @@ function Home() {
             {menu ? <X /> : <Menu />}
           </Button>
         </header>
-        <div className="home-content">
+        <div className="home-content home-content-solo">
           <p className="home-brand-mark">BELL</p>
           <h1 className="home-title">
             <span className="title-clip">
@@ -80,40 +76,18 @@ function Home() {
             </span>
           </h1>
           <p className="home-copy">
-            Tokenized stocks as a gift box on BSC.
-            <br />
-            You pay. They claim the link.
-            <br />
+            Gift real bStocks on BNB Smart Chain. You pay. They claim the link.
             BELL still won’t wrap a fake weekend price.
           </p>
-          <Button asChild variant="light" size="hero">
+          <Button asChild size="hero" className="btn-binance">
             <Link to="/gift">
               <span>Wrap a gift box</span>
-              <span className="arrow-box">
+              <span className="arrow-box arrow-box-binance">
                 <Gift />
               </span>
             </Link>
           </Button>
         </div>
-        <article className="demo-card">
-          <div className="demo-visual">
-            <img
-              src={demo}
-              width={1024}
-              height={1024}
-              alt="Red and blue smoke around an exchange bell"
-            />
-            <div className="demo-signal">
-              <span className="status-dot status-closed" />
-              Session-gated wrap
-            </div>
-          </div>
-          <Button asChild variant="glass" className="watch-button">
-            <Link to="/desk">
-              Power desk <ArrowUpRight />
-            </Link>
-          </Button>
-        </article>
       </section>
     </main>
   );
